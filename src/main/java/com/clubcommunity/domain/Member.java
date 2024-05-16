@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -28,4 +31,6 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private RoleType roleType;
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ClubMember> clubMembers = new ArrayList<>();
 }

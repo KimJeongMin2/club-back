@@ -4,34 +4,28 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@Entity
+@Entity(name="club-memebr")
 @NoArgsConstructor
-public class Post {
-
+public class ClubMember {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long postId;
+    private Long cmId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id")
     private Member member;
 
-    private String title;
-    private String content;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "club_id")
+    private Club club;
 
     @Enumerated(EnumType.STRING)
-    private Category category;
+    private MemberStatus memberStatus;
 
-    @Lob
-    @Column(columnDefinition = "BLOB")
-    private Byte[] photo;
-
-    @CreationTimestamp
-    private LocalDateTime createAt = LocalDateTime.now();
+    @Enumerated(EnumType.STRING)
+    private Status status;
+    private String refusalReason;
 }
