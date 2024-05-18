@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -35,10 +36,27 @@ public class PostService {
         }
         return postRepository.save(post);
     }
-
-    public List<Post> getAllPosts(){
-        return postRepository.findAll();
+    public List<PostDTO> getAllPosts() {
+        List<Post> posts = postRepository.findAll();
+        List<PostDTO> postDTOs = new ArrayList<>();
+        for (Post post : posts) {
+            PostDTO postDTO = new PostDTO();
+            postDTO.setPostId(post.getPostId());
+            postDTO.setTitle(post.getTitle());
+            postDTO.setContent(post.getContent());
+            postDTO.setCategory(post.getCategory());
+            postDTO.setNoticeVisibilityType(post.getNoticeVisibilityType());
+            postDTO.setCreatedAt(post.getCreateAt());
+            postDTO.setMember(memberService.convertMemberToMemberDTO(post.getMember())); // Member 엔티티를 MemberDTO로 변환
+            postDTO.setPhoto(post.getPhoto());
+            postDTOs.add(postDTO);
+        }
+        return postDTOs;
     }
+
+//    public List<Post> getAllPosts(){
+//        return postRepository.findAll();
+//    }
     public Post getPostById(Long id) {
         return postRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found with id: " + id));
