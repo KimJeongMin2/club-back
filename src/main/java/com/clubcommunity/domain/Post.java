@@ -27,10 +27,12 @@ public class Post {
 
     @Enumerated(EnumType.STRING)
     private Category category;
-
     @Lob
     @Column(columnDefinition = "BLOB")
-    private Byte[] photo;
+    private byte[] photo;
+
+    @Enumerated(EnumType.STRING)
+    private NoticeVisibilityType noticeVisibilityType;
 
     @CreationTimestamp
     private LocalDateTime createAt = LocalDateTime.now();
