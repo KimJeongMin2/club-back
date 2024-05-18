@@ -4,12 +4,13 @@ import com.clubcommunity.domain.Category;
 
 import com.clubcommunity.domain.NoticeVisibilityType;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 
-
+@NoArgsConstructor
 @Getter
 @Setter
 public class PostDTO {
@@ -20,4 +21,5 @@ public class PostDTO {
     private NoticeVisibilityType noticeVisibilityType;
     private LocalDateTime createdAt;
     private MemberDTO member;
+    private byte[] photo;
 }

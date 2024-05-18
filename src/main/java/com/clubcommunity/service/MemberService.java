@@ -19,4 +19,16 @@ public class MemberService {
         member.setRoleType(memberDTO.getRoleType());
         return member;
     }
+    public MemberDTO convertMemberToMemberDTO(Member member) {
+        MemberDTO memberDTO = new MemberDTO();
+        memberDTO.setStudentId(member.getStudentId());
+        memberDTO.setName(member.getName());
+        memberDTO.setBirth(member.getBirth());
+        memberDTO.setGender(member.getGender());
+        memberDTO.setDepartment(member.getDepartment());
+        memberDTO.setPhoneNum(member.getPhoneNum());
+        memberDTO.setEmail(member.getEmail());
+        memberDTO.setRoleType(member.getRoleType());
+        return memberDTO;
+    }
 }

@@ -28,7 +28,7 @@ public class Post {
     @Enumerated(EnumType.STRING)
     private Category category;
     @Lob
-    @Column(columnDefinition = "BLOB")
+    @Column(columnDefinition = "MEDIUMBLOB")
     private byte[] photo;
 
     @Enumerated(EnumType.STRING)
