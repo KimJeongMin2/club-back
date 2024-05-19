@@ -71,8 +71,8 @@ public class PostService {
 //        post.setMember(memberService.convertMemberDTOToMember(postDto.getMember()));
 //        return postRepository.save(post);
 //    }
-    public void deletePost(Long id) {
-        Post post = getPostById(id);
+    public void deletePost(Long noticeId) {
+        Post post = getPostById(noticeId);
         postRepository.delete(post);
     }
 }
