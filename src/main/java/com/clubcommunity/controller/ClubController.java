@@ -22,9 +22,9 @@ public class ClubController {
 
     // 동아리 등록
     @PostMapping("")
-    public ResponseEntity makeClub(Long memberPk, @RequestBody ClubDTO clubDTO) throws RuntimeException {
+    public ResponseEntity makeClub(@RequestBody ClubDTO clubDTO) throws RuntimeException {
 
-        Club club = clubService.makeClub(memberPk, clubDTO);
+        Club club = clubService.makeClub(clubDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(club);
     }
 }

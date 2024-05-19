@@ -17,4 +17,5 @@ public class ClubDTO {
     private String professorName;
     private String professorMajor;
     private String professorPhone;
+    private MemberDTO member;
 }

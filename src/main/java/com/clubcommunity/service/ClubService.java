@@ -16,11 +16,10 @@ public class ClubService {
     private final ClubRepository clubRepository;
     private final MemberRepository memberRepository;
     private final ClubMemberRepository clubMemberRepository;
+    private final MemberService memberService;
 
-    public Club makeClub(Long memberPk, ClubDTO clubDTO) {
 
-        Member member = memberRepository.findById(memberPk)
-                .orElseThrow(()-> new RuntimeException());
+    public Club makeClub(ClubDTO clubDTO) {
 
         Club club = Club.builder()
                 .type(clubDTO.getType())
@@ -37,8 +36,9 @@ public class ClubService {
         Club savedClub = clubRepository.save(club);
 
         ClubMember clubMember = ClubMember.builder()
-                .member(member)
+                .member(memberService.convertMemberDTOToMember(clubDTO.getMember()))
                 .club(savedClub)
+                .memberStatus(MemberStatus.ACTIVITY)
                 .status(Status.GO_OVER)
                 .roleType(RoleType.MASTER)
                 .build();
