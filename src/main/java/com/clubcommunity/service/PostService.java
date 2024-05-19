@@ -62,7 +62,28 @@ public class PostService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found with id: " + id));
     }
 
-//    public Post updatePost(Long id, PostDTO postDto) {
+    public Post updatePost(Long postId, PostDTO postDTO, MultipartFile files) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
+
+        post.setTitle(postDTO.getTitle());
+        post.setMember(memberService.convertMemberDTOToMember(postDTO.getMember()));
+        post.setContent(postDTO.getContent());
+        post.setCategory(postDTO.getCategory());
+        post.setNoticeVisibilityType(postDTO.getNoticeVisibilityType());
+
+        if (!files.isEmpty()) {
+            try {
+                post.setPhoto(files.getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return postRepository.save(post);
+    }
+
+
+    //    public Post updatePost(Long id, PostDTO postDto) {
 //        Post post = getPostById(id);
 //        post.setTitle(postDto.getTitle());
 //        post.setContent(postDto.getContent());

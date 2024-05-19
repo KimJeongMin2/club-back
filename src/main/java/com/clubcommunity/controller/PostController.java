@@ -67,6 +67,25 @@ public class PostController {
 //        return ResponseEntity.ok(updatedPost);
 //    }
 
+    @PutMapping(value = "/{noticeId}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<Post> updatePost(
+            @PathVariable("noticeId") Long noticeId,
+            @RequestPart(value = "dto", required = false) PostDTO postDTO,
+            @RequestPart(value = "photo", required = false) MultipartFile files
+    ) {
+        System.out.println("Updating post with ID: " + noticeId);
+        System.out.println("Title: " + postDTO.getTitle());
+        System.out.println("Content: " + postDTO.getContent());
+        System.out.println("Category: " + postDTO.getCategory());
+        System.out.println("Member: " + postDTO.getMember());
+        System.out.println("NoticeVisibility: " + postDTO.getNoticeVisibilityType());
+        System.out.println("files: " + files);
+
+        Post updatedPost = postService.updatePost(noticeId, postDTO, files);
+        return ResponseEntity.ok(updatedPost);
+    }
+
+
     @DeleteMapping("/{noticeId}")
     public ResponseEntity<Void> deletePost(@PathVariable("noticeId") Long noticeId){
         postService.deletePost(noticeId);
