@@ -16,7 +16,7 @@ public class MemberService {
         member.setDepartment(memberDTO.getDepartment());
         member.setPhoneNum(memberDTO.getPhoneNum());
         member.setEmail(memberDTO.getEmail());
-        member.setRoleType(memberDTO.getRoleType());
+//        member.setRoleType(memberDTO.getRoleType());
         return member;
     }
     public MemberDTO convertMemberToMemberDTO(Member member) {
@@ -28,7 +28,7 @@ public class MemberService {
         memberDTO.setDepartment(member.getDepartment());
         memberDTO.setPhoneNum(member.getPhoneNum());
         memberDTO.setEmail(member.getEmail());
-        memberDTO.setRoleType(member.getRoleType());
+//        memberDTO.setRoleType(member.getRoleType());
         return memberDTO;
     }
 }

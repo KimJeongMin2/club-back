@@ -28,8 +28,6 @@ public class Member {
     private String phoneNum;
     private String email;
 
-    @Enumerated(EnumType.STRING)
-    private RoleType roleType;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ClubMember> clubMembers = new ArrayList<>();
