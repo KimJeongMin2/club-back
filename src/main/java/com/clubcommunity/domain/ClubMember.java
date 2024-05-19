@@ -1,13 +1,12 @@
 package com.clubcommunity.domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
-@Setter
+@Builder
 @Entity(name="club-memebr")
+@AllArgsConstructor
 @NoArgsConstructor
 public class ClubMember {
     @Id
@@ -27,5 +26,9 @@ public class ClubMember {
 
     @Enumerated(EnumType.STRING)
     private Status status;
+
     private String refusalReason;
+
+    @Enumerated(EnumType.STRING)
+    private RoleType roleType;
 }
