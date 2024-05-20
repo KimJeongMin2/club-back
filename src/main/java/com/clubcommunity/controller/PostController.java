@@ -5,6 +5,7 @@ import com.clubcommunity.domain.Member;
 import com.clubcommunity.domain.Post;
 import com.clubcommunity.dto.MemberDTO;
 import com.clubcommunity.dto.PostDTO;
+import com.clubcommunity.dto.VideoDTO;
 import com.clubcommunity.service.ImageService;
 import com.clubcommunity.service.MemberService;
 import com.clubcommunity.service.PostService;
@@ -92,5 +93,25 @@ public class PostController {
         return ResponseEntity.noContent().build();
     }
 
+    //활동 영상 등록
+    @PostMapping("/video")
+    public ResponseEntity makeVideo(@RequestBody VideoDTO videoDTO) throws RuntimeException {
+        Post post = postService.makeVideo(videoDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(post);
+    }
+
+    //활동 영상 4개 최신순으로 조회
+    @GetMapping("/main-video")
+    public ResponseEntity<List<VideoDTO>> get4VideoList() throws RuntimeException {
+        List<VideoDTO> videoList = postService.get4VideoList();
+        return ResponseEntity.ok(videoList);
+    }
+
+    //활동 영상 4개 최신순으로 조회
+    @GetMapping("/video")
+    public ResponseEntity<List<VideoDTO>> getVideoList() throws RuntimeException {
+        List<VideoDTO> videoList = postService.getVideoList();
+        return ResponseEntity.ok(videoList);
+    }
 
 }

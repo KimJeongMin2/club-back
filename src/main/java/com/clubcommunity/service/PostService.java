@@ -1,19 +1,22 @@
 package com.clubcommunity.service;
 
+import com.clubcommunity.domain.Category;
 import com.clubcommunity.domain.Post;
 import com.clubcommunity.dto.PostDTO;
+import com.clubcommunity.dto.VideoDTO;
 import com.clubcommunity.repository.PostRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 
 @Service
+@Slf4j
 public class PostService {
     private final PostRepository postRepository;
     private final MemberService memberService;
@@ -95,5 +98,58 @@ public class PostService {
     public void deletePost(Long noticeId) {
         Post post = getPostById(noticeId);
         postRepository.delete(post);
+    }
+
+    public Post makeVideo(VideoDTO videoDTO) {
+        Post post = Post.builder()
+                .title(videoDTO.getTitle())
+                .content(videoDTO.getContent())
+                .category(Category.VIDEO)
+                .member(memberService.convertMemberDTOToMember(videoDTO.getMember()))
+                .build();
+
+        Post savedPost = postRepository.save(post);
+        log.info("savedPost: "  + savedPost.getPostId());
+
+        return savedPost;
+    }
+
+    public List<VideoDTO> get4VideoList() {
+        // Category가 VIDEO인 포스트 4개를 최신순으로 가져옴
+        List<Post> videos = postRepository.findTop4ByCategoryOrderByCreateAtDesc(Category.VIDEO);
+        List<VideoDTO> videoDTOS = new ArrayList<>();
+
+        for (Post post : videos) {
+            VideoDTO videoDTO = new VideoDTO();
+            videoDTO.setTitle(post.getTitle());
+            videoDTO.setContent(post.getContent());
+            videoDTO.setMember(memberService.convertMemberToMemberDTO(post.getMember()));
+            log.info("제목:"+videoDTO.getTitle());
+            videoDTOS.add(videoDTO);
+        }
+
+        log.info("post개수:"+videoDTOS.size());
+
+
+        return videoDTOS;
+    }
+
+    public List<VideoDTO> getVideoList() {
+        // Category가 VIDEO인 포스트 최신순으로 가져옴
+        List<Post> videos = postRepository.findByCategoryOrderByCreateAtDesc(Category.VIDEO);
+        List<VideoDTO> videoDTOS = new ArrayList<>();
+
+        for (Post post : videos) {
+            VideoDTO videoDTO = new VideoDTO();
+            videoDTO.setTitle(post.getTitle());
+            videoDTO.setContent(post.getContent());
+            videoDTO.setMember(memberService.convertMemberToMemberDTO(post.getMember()));
+            videoDTOS.add(videoDTO);
+        }
+
+        log.info("post 개수:"+videoDTOS.size());
+
+
+        return videoDTOS;
     }
 }

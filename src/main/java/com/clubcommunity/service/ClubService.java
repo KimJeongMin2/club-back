@@ -6,7 +6,6 @@ import com.clubcommunity.repository.ClubMemberRepository;
 import com.clubcommunity.repository.ClubRepository;
 import com.clubcommunity.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 public class ClubService {
 
     private final ClubRepository clubRepository;
-    private final MemberRepository memberRepository;
     private final ClubMemberRepository clubMemberRepository;
     private final MemberService memberService;
 
