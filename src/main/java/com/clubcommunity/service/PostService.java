@@ -40,7 +40,7 @@ public class PostService {
         return postRepository.save(post);
     }
     public List<PostDTO> getAllPosts() {
-        List<Post> posts = postRepository.findAll();
+        List<Post> posts = postRepository.findByCategory(Category.NOTICE);
         List<PostDTO> postDTOs = new ArrayList<>();
         for (Post post : posts) {
             PostDTO postDTO = new PostDTO();
@@ -85,19 +85,39 @@ public class PostService {
         return postRepository.save(post);
     }
 
-
-    //    public Post updatePost(Long id, PostDTO postDto) {
-//        Post post = getPostById(id);
-//        post.setTitle(postDto.getTitle());
-//        post.setContent(postDto.getContent());
-//        post.setCategory(postDto.getCategory());
-//        post.setPhoto(postDto.getPhoto());
-//        post.setMember(memberService.convertMemberDTOToMember(postDto.getMember()));
-//        return postRepository.save(post);
-//    }
     public void deletePost(Long noticeId) {
         Post post = getPostById(noticeId);
         postRepository.delete(post);
+    }
+
+    public Post createMemberRecruitment(PostDTO postDTO, MultipartFile files) {
+        Post post = new Post();
+        post.setTitle(postDTO.getTitle());
+        post.setMember(memberService.convertMemberDTOToMember(postDTO.getMember()));
+        post.setContent(postDTO.getContent());
+        post.setCategory(postDTO.getCategory());
+        try {
+            post.setPhoto(files.getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return postRepository.save(post);
+    }
+    public List<PostDTO> getAllPostsRecruitment() {
+        List<Post> posts = postRepository.findByCategory(Category.RECRUIT);
+        List<PostDTO> postDTOs = new ArrayList<>();
+        for (Post post : posts) {
+            PostDTO postDTO = new PostDTO();
+            postDTO.setPostId(post.getPostId());
+            postDTO.setTitle(post.getTitle());
+            postDTO.setContent(post.getContent());
+            postDTO.setCategory(post.getCategory());
+            postDTO.setCreatedAt(post.getCreateAt());
+            postDTO.setMember(memberService.convertMemberToMemberDTO(post.getMember())); // Member 엔티티를 MemberDTO로 변환
+            postDTO.setPhoto(post.getPhoto());
+            postDTOs.add(postDTO);
+        }
+        return postDTOs;
     }
 
     public Post makeVideo(VideoDTO videoDTO) {
