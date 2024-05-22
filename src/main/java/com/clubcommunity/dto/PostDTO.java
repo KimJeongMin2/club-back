@@ -22,4 +22,6 @@ public class PostDTO {
     private LocalDateTime createdAt;
     private MemberDTO member;
     private byte[] photo;
+
+    private byte[] file;
 }

@@ -31,6 +31,10 @@ public class Post {
     @Column(columnDefinition = "MEDIUMBLOB")
     private byte[] photo;
 
+    @Lob
+    @Column(columnDefinition = "MEDIUMBLOB")
+    private byte[] file;
+
     @Enumerated(EnumType.STRING)
     private NoticeVisibilityType noticeVisibilityType;
 
