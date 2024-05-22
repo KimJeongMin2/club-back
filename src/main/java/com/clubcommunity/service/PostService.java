@@ -26,19 +26,23 @@ public class PostService {
     }
 
     public Post createPost(PostDTO postDTO, MultipartFile files) {
-        Post post = new Post();
-        post.setTitle(postDTO.getTitle());
-        post.setMember(memberService.convertMemberDTOToMember(postDTO.getMember()));
-        post.setContent(postDTO.getContent());
-        post.setCategory(postDTO.getCategory());
-        post.setNoticeVisibilityType(postDTO.getNoticeVisibilityType());
+        Post.PostBuilder postBuilder = Post.builder()
+                .title(postDTO.getTitle())
+                .member(memberService.convertMemberDTOToMember(postDTO.getMember()))
+                .content(postDTO.getContent())
+                .category(postDTO.getCategory())
+                .noticeVisibilityType(postDTO.getNoticeVisibilityType());
+
         try {
-            post.setPhoto(files.getBytes());
+            postBuilder.photo(files.getBytes());
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        Post post = postBuilder.build();
         return postRepository.save(post);
     }
+
     public List<PostDTO> getAllPosts() {
         List<Post> posts = postRepository.findByCategory(Category.NOTICE);
         List<PostDTO> postDTOs = new ArrayList<>();
@@ -90,19 +94,42 @@ public class PostService {
         postRepository.delete(post);
     }
 
-    public Post createMemberRecruitment(PostDTO postDTO, MultipartFile files) {
-        Post post = new Post();
-        post.setTitle(postDTO.getTitle());
-        post.setMember(memberService.convertMemberDTOToMember(postDTO.getMember()));
-        post.setContent(postDTO.getContent());
-        post.setCategory(postDTO.getCategory());
+    public Post createMemberRecruitment(PostDTO postDTO, MultipartFile photo, MultipartFile file) {
+        Post.PostBuilder postBuilder = Post.builder()
+                .title(postDTO.getTitle())
+                .member(memberService.convertMemberDTOToMember(postDTO.getMember()))
+                .content(postDTO.getContent())
+                .category(postDTO.getCategory());
+
         try {
-            post.setPhoto(files.getBytes());
+            postBuilder.photo(photo.getBytes());
+            postBuilder.file(file.getBytes());
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        Post post = postBuilder.build();
         return postRepository.save(post);
     }
+
+
+
+    //    public Post createMemberRecruitment(PostDTO postDTO, MultipartFile files) {
+//        Post.PostBuilder postBuilder = Post.builder()
+//                .title(postDTO.getTitle())
+//                .member(memberService.convertMemberDTOToMember(postDTO.getMember()))
+//                .content(postDTO.getContent())
+//                .category(postDTO.getCategory());
+//
+//        try {
+//            postBuilder.photo(files.getBytes());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        Post post = postBuilder.build();
+//        return postRepository.save(post);
+//    }
     public List<PostDTO> getAllPostsRecruitment() {
         List<Post> posts = postRepository.findByCategory(Category.RECRUIT);
         List<PostDTO> postDTOs = new ArrayList<>();
@@ -115,10 +142,30 @@ public class PostService {
             postDTO.setCreatedAt(post.getCreateAt());
             postDTO.setMember(memberService.convertMemberToMemberDTO(post.getMember())); // Member 엔티티를 MemberDTO로 변환
             postDTO.setPhoto(post.getPhoto());
+            postDTO.setFile(post.getFile());
             postDTOs.add(postDTO);
         }
         return postDTOs;
     }
+    public Post updateRecruitment(Long postId, PostDTO postDTO, MultipartFile files) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
+
+        post.setTitle(postDTO.getTitle());
+        post.setMember(memberService.convertMemberDTOToMember(postDTO.getMember()));
+        post.setContent(postDTO.getContent());
+        post.setCategory(postDTO.getCategory());
+
+        if (!files.isEmpty()) {
+            try {
+                post.setPhoto(files.getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return postRepository.save(post);
+    }
+
 
     public Post makeVideo(VideoDTO videoDTO) {
         Post post = Post.builder()
