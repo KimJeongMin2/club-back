@@ -3,11 +3,14 @@ package com.clubcommunity.dto;
 import com.clubcommunity.domain.Type;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.antlr.v4.runtime.misc.NotNull;
 
 @NoArgsConstructor
+@Setter
 @Getter
 public class ClubDTO {
+    private Long clubId;
     private Type type; // 동아리 종류
     private String clubName; // 동아리 이름
     private String applicantName; // 신청자 이름

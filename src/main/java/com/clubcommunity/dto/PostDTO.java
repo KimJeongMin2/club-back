@@ -21,7 +21,10 @@ public class PostDTO {
     private NoticeVisibilityType noticeVisibilityType;
     private LocalDateTime createdAt;
     private MemberDTO member;
+
+    private ClubDTO club;
     private byte[] photo;
 
     private byte[] file;
+
 }

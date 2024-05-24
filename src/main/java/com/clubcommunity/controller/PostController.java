@@ -100,7 +100,7 @@ public class PostController {
             @RequestPart(value = "photo", required = false) MultipartFile photo,
             @RequestPart(value = "file", required = false) MultipartFile file
     ) {
-        // 파일 처리 로직
+        System.out.println(postDTO.getClub());
         Post savedPost = postService.createMemberRecruitment(postDTO, photo, file);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedPost);
     }

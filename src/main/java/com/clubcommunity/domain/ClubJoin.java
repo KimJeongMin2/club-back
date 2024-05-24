@@ -8,15 +8,14 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@Entity
+@Entity(name="club-join")
 @NoArgsConstructor
-@Builder
 @AllArgsConstructor
-public class Post {
-
+@Builder
+public class ClubJoin {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long postId;
+    private Long clubJoinId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id")
@@ -27,21 +26,18 @@ public class Post {
     private Club club;
 
     private String title;
-    private String content;
-
-    @Enumerated(EnumType.STRING)
-    private Category category;
-    @Lob
-    @Column(columnDefinition = "MEDIUMBLOB")
-    private byte[] photo;
 
     @Lob
     @Column(columnDefinition = "MEDIUMBLOB")
     private byte[] file;
 
     @Enumerated(EnumType.STRING)
-    private NoticeVisibilityType noticeVisibilityType;
+    private MemberStatus memberStatus;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @CreationTimestamp
     private LocalDateTime createAt = LocalDateTime.now();
+
 }
