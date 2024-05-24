@@ -20,9 +20,12 @@ import java.util.List;
 public class PostService {
     private final PostRepository postRepository;
     private final MemberService memberService;
-    public PostService(PostRepository postRepository, MemberService memberService){
+
+    private final ClubService clubService;
+    public PostService(PostRepository postRepository, MemberService memberService, ClubService clubService){
         this.postRepository = postRepository;
         this.memberService = memberService;
+        this.clubService = clubService;
     }
 
     public Post createPost(PostDTO postDTO, MultipartFile files) {
@@ -95,11 +98,14 @@ public class PostService {
     }
 
     public Post createMemberRecruitment(PostDTO postDTO, MultipartFile photo, MultipartFile file) {
+
         Post.PostBuilder postBuilder = Post.builder()
                 .title(postDTO.getTitle())
                 .member(memberService.convertMemberDTOToMember(postDTO.getMember()))
                 .content(postDTO.getContent())
-                .category(postDTO.getCategory());
+                .category(postDTO.getCategory())
+                .club(clubService.convertClubDTOToClub(postDTO.getClub()));
+
 
         try {
             postBuilder.photo(photo.getBytes());
@@ -111,6 +117,23 @@ public class PostService {
         Post post = postBuilder.build();
         return postRepository.save(post);
     }
+
+//    public Post createMemberRecruitment(PostDTO postDTO, MultipartFile photo, MultipartFile file) {
+//        Post.PostBuilder postBuilder = Post.builder()
+//                .title(postDTO.getTitle())
+//                .member(memberService.convertMemberDTOToMember(postDTO.getMember()))
+//                .content(postDTO.getContent())
+//                .category(postDTO.getCategory());
+//        try {
+//            postBuilder.photo(photo.getBytes());
+//            postBuilder.file(file.getBytes());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        Post post = postBuilder.build();
+//        return postRepository.save(post);
+//    }
 
 
 
@@ -143,6 +166,7 @@ public class PostService {
             postDTO.setMember(memberService.convertMemberToMemberDTO(post.getMember())); // Member 엔티티를 MemberDTO로 변환
             postDTO.setPhoto(post.getPhoto());
             postDTO.setFile(post.getFile());
+            postDTO.setClub(clubService.convertClubToClubDTO(post.getClub()));
             postDTOs.add(postDTO);
         }
         return postDTOs;
