@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,27 +20,34 @@ import java.util.List;
 public class PostService {
     private final PostRepository postRepository;
     private final MemberService memberService;
-    public PostService(PostRepository postRepository, MemberService memberService){
+
+    private final ClubService clubService;
+    public PostService(PostRepository postRepository, MemberService memberService, ClubService clubService){
         this.postRepository = postRepository;
         this.memberService = memberService;
+        this.clubService = clubService;
     }
 
     public Post createPost(PostDTO postDTO, MultipartFile files) {
-        Post post = new Post();
-        post.setTitle(postDTO.getTitle());
-        post.setMember(memberService.convertMemberDTOToMember(postDTO.getMember()));
-        post.setContent(postDTO.getContent());
-        post.setCategory(postDTO.getCategory());
-        post.setNoticeVisibilityType(postDTO.getNoticeVisibilityType());
+        Post.PostBuilder postBuilder = Post.builder()
+                .title(postDTO.getTitle())
+                .member(memberService.convertMemberDTOToMember(postDTO.getMember()))
+                .content(postDTO.getContent())
+                .category(postDTO.getCategory())
+                .noticeVisibilityType(postDTO.getNoticeVisibilityType());
+
         try {
-            post.setPhoto(files.getBytes());
+            postBuilder.photo(files.getBytes());
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        Post post = postBuilder.build();
         return postRepository.save(post);
     }
+
     public List<PostDTO> getAllPosts() {
-        List<Post> posts = postRepository.findAll();
+        List<Post> posts = postRepository.findByCategory(Category.NOTICE);
         List<PostDTO> postDTOs = new ArrayList<>();
         for (Post post : posts) {
             PostDTO postDTO = new PostDTO();
@@ -100,6 +106,100 @@ public class PostService {
         Post post = getPostById(postId);
         postRepository.delete(post);
     }
+
+    public Post createMemberRecruitment(PostDTO postDTO, MultipartFile photo, MultipartFile file) {
+
+        Post.PostBuilder postBuilder = Post.builder()
+                .title(postDTO.getTitle())
+                .member(memberService.convertMemberDTOToMember(postDTO.getMember()))
+                .content(postDTO.getContent())
+                .category(postDTO.getCategory())
+                .club(clubService.convertClubDTOToClub(postDTO.getClub()));
+
+
+        try {
+            postBuilder.photo(photo.getBytes());
+            postBuilder.file(file.getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Post post = postBuilder.build();
+        return postRepository.save(post);
+    }
+
+//    public Post createMemberRecruitment(PostDTO postDTO, MultipartFile photo, MultipartFile file) {
+//        Post.PostBuilder postBuilder = Post.builder()
+//                .title(postDTO.getTitle())
+//                .member(memberService.convertMemberDTOToMember(postDTO.getMember()))
+//                .content(postDTO.getContent())
+//                .category(postDTO.getCategory());
+//        try {
+//            postBuilder.photo(photo.getBytes());
+//            postBuilder.file(file.getBytes());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        Post post = postBuilder.build();
+//        return postRepository.save(post);
+//    }
+
+
+
+    //    public Post createMemberRecruitment(PostDTO postDTO, MultipartFile files) {
+//        Post.PostBuilder postBuilder = Post.builder()
+//                .title(postDTO.getTitle())
+//                .member(memberService.convertMemberDTOToMember(postDTO.getMember()))
+//                .content(postDTO.getContent())
+//                .category(postDTO.getCategory());
+//
+//        try {
+//            postBuilder.photo(files.getBytes());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        Post post = postBuilder.build();
+//        return postRepository.save(post);
+//    }
+    public List<PostDTO> getAllPostsRecruitment() {
+        List<Post> posts = postRepository.findByCategory(Category.RECRUIT);
+        List<PostDTO> postDTOs = new ArrayList<>();
+        for (Post post : posts) {
+            PostDTO postDTO = new PostDTO();
+            postDTO.setPostId(post.getPostId());
+            postDTO.setTitle(post.getTitle());
+            postDTO.setContent(post.getContent());
+            postDTO.setCategory(post.getCategory());
+            postDTO.setCreatedAt(post.getCreateAt());
+            postDTO.setMember(memberService.convertMemberToMemberDTO(post.getMember())); // Member 엔티티를 MemberDTO로 변환
+            postDTO.setPhoto(post.getPhoto());
+            postDTO.setFile(post.getFile());
+            postDTO.setClub(clubService.convertClubToClubDTO(post.getClub()));
+            postDTOs.add(postDTO);
+        }
+        return postDTOs;
+    }
+    public Post updateRecruitment(Long postId, PostDTO postDTO, MultipartFile files) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
+
+        post.setTitle(postDTO.getTitle());
+        post.setMember(memberService.convertMemberDTOToMember(postDTO.getMember()));
+        post.setContent(postDTO.getContent());
+        post.setCategory(postDTO.getCategory());
+
+        if (!files.isEmpty()) {
+            try {
+                post.setPhoto(files.getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return postRepository.save(post);
+    }
+
 
     public Post makeVideo(VideoDTO.Request videoDTO) {
         Post post = Post.builder()
