@@ -1,15 +1,35 @@
 package com.clubcommunity.dto;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.clubcommunity.domain.Category;
+import lombok.*;
 
-@NoArgsConstructor
-@Getter
-@Setter
+import java.time.LocalDateTime;
+
 public class VideoDTO {
 
-    private String title; // 동영상 제목
-    private String content; // 동영상 url
-    private MemberDTO member;
+    @AllArgsConstructor
+    @Getter
+    @Setter
+    @Builder
+    public static class Request {
+        private Long postId;
+        private String title; // 동영상 제목
+        private String content; // 동영상 url
+        private MemberDTO member;
+        private LocalDateTime createdAt;
+        private Category category;
+        private LocalDateTime updateAt;
+    }
+
+    @AllArgsConstructor
+    @Getter
+    @Setter
+    @Builder
+    public static class UpdateRequest {
+        private String title; // 동영상 제목
+        private String content; // 동영상 url
+    }
+
+
+
 }

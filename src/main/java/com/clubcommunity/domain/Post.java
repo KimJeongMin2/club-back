@@ -44,4 +44,13 @@ public class Post {
 
     @CreationTimestamp
     private LocalDateTime createAt = LocalDateTime.now();
+
+    @CreationTimestamp
+    private LocalDateTime updateAt = LocalDateTime.now();
+
+    public void updateVideo(String title, String content) {
+        this.title = (title != null)? title : this.title;
+        this.content = (content != null)? content : this.content;
+        this.updateAt = LocalDateTime.now();
+    }
 }

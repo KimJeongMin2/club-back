@@ -92,8 +92,18 @@ public class PostService {
         return postRepository.save(post);
     }
 
-    public void deletePost(Long noticeId) {
-        Post post = getPostById(noticeId);
+
+    //    public Post updatePost(Long id, PostDTO postDto) {
+//        Post post = getPostById(id);
+//        post.setTitle(postDto.getTitle());
+//        post.setContent(postDto.getContent());
+//        post.setCategory(postDto.getCategory());
+//        post.setPhoto(postDto.getPhoto());
+//        post.setMember(memberService.convertMemberDTOToMember(postDto.getMember()));
+//        return postRepository.save(post);
+//    }
+    public void deletePost(Long postId) {
+        Post post = getPostById(postId);
         postRepository.delete(post);
     }
 
@@ -191,7 +201,7 @@ public class PostService {
     }
 
 
-    public Post makeVideo(VideoDTO videoDTO) {
+    public Post makeVideo(VideoDTO.Request videoDTO) {
         Post post = Post.builder()
                 .title(videoDTO.getTitle())
                 .content(videoDTO.getContent())
@@ -205,42 +215,76 @@ public class PostService {
         return savedPost;
     }
 
-    public List<VideoDTO> get4VideoList() {
+    public List<VideoDTO.Request> get4VideoList() {
         // Category가 VIDEO인 포스트 4개를 최신순으로 가져옴
         List<Post> videos = postRepository.findTop4ByCategoryOrderByCreateAtDesc(Category.VIDEO);
-        List<VideoDTO> videoDTOS = new ArrayList<>();
+        List<VideoDTO.Request> videoDTOS = new ArrayList<>();
 
         for (Post post : videos) {
-            VideoDTO videoDTO = new VideoDTO();
-            videoDTO.setTitle(post.getTitle());
-            videoDTO.setContent(post.getContent());
-            videoDTO.setMember(memberService.convertMemberToMemberDTO(post.getMember()));
-            log.info("제목:"+videoDTO.getTitle());
+            VideoDTO.Request videoDTO = VideoDTO.Request.builder()
+                    .postId(post.getPostId())
+                    .title(post.getTitle())
+                    .content(post.getContent())
+                    .member(memberService.convertMemberToMemberDTO(post.getMember()))
+                    .createdAt(post.getCreateAt())
+                    .updateAt(post.getUpdateAt())
+                    .category(post.getCategory())
+                    .build();
             videoDTOS.add(videoDTO);
         }
 
-        log.info("post개수:"+videoDTOS.size());
-
+        log.info("post개수:" + videoDTOS.size());
 
         return videoDTOS;
     }
 
-    public List<VideoDTO> getVideoList() {
+    public List<VideoDTO.Request> getVideoList() {
         // Category가 VIDEO인 포스트 최신순으로 가져옴
         List<Post> videos = postRepository.findByCategoryOrderByCreateAtDesc(Category.VIDEO);
-        List<VideoDTO> videoDTOS = new ArrayList<>();
+        List<VideoDTO.Request> videoDTOS = new ArrayList<>();
 
         for (Post post : videos) {
-            VideoDTO videoDTO = new VideoDTO();
-            videoDTO.setTitle(post.getTitle());
-            videoDTO.setContent(post.getContent());
-            videoDTO.setMember(memberService.convertMemberToMemberDTO(post.getMember()));
+            VideoDTO.Request videoDTO = VideoDTO.Request.builder()
+                    .postId(post.getPostId())
+                    .title(post.getTitle())
+                    .content(post.getContent())
+                    .member(memberService.convertMemberToMemberDTO(post.getMember()))
+                    .createdAt(post.getCreateAt())
+                    .updateAt(post.getUpdateAt())
+                    .category(post.getCategory())
+                    .build();
             videoDTOS.add(videoDTO);
         }
 
         log.info("post 개수:"+videoDTOS.size());
 
-
         return videoDTOS;
+    }
+
+    public Post updateVideo(Long postId, VideoDTO.UpdateRequest videoDTO) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("해당하는 Post를 찾을 수 없습니다."));
+
+        post.updateVideo(videoDTO.getTitle(), videoDTO.getContent());
+
+        return postRepository.save(post);
+    }
+
+    public VideoDTO.Request getVideo(Long videoId) {
+        Post post = postRepository.findById(videoId)
+                .orElseThrow(() -> new RuntimeException("해당하는 Post를 찾을 수 없습니다."));
+
+        VideoDTO.Request videoDTO = VideoDTO.Request.builder()
+                .postId(post.getPostId())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .member(memberService.convertMemberToMemberDTO(post.getMember()))
+                .createdAt(post.getCreateAt())
+                .updateAt(post.getUpdateAt())
+                .category(post.getCategory())
+                .build();
+
+        return videoDTO;
+
     }
 }
