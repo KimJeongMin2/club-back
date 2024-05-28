@@ -87,31 +87,54 @@ public class PostController {
     }
 
 
-    @DeleteMapping("/{noticeId}")
-    public ResponseEntity<Void> deletePost(@PathVariable("noticeId") Long noticeId){
-        postService.deletePost(noticeId);
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<Void> deletePost(@PathVariable("postId") Long postId){
+        System.out.println("postId:"+postId);
+        postService.deletePost(postId);
         return ResponseEntity.noContent().build();
     }
 
     //활동 영상 등록
     @PostMapping("/video")
-    public ResponseEntity makeVideo(@RequestBody VideoDTO videoDTO) throws RuntimeException {
+    public ResponseEntity makeVideo(@RequestBody VideoDTO.Request videoDTO) throws RuntimeException {
         Post post = postService.makeVideo(videoDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(post);
     }
 
     //활동 영상 4개 최신순으로 조회
     @GetMapping("/main-video")
-    public ResponseEntity<List<VideoDTO>> get4VideoList() throws RuntimeException {
-        List<VideoDTO> videoList = postService.get4VideoList();
+    public ResponseEntity<List<VideoDTO.Request>> get4VideoList() throws RuntimeException {
+        List<VideoDTO.Request> videoList = postService.get4VideoList();
         return ResponseEntity.ok(videoList);
     }
 
-    //활동 영상 4개 최신순으로 조회
+    //활동 영상 리스트 조회
     @GetMapping("/video")
-    public ResponseEntity<List<VideoDTO>> getVideoList() throws RuntimeException {
-        List<VideoDTO> videoList = postService.getVideoList();
+    public ResponseEntity<List<VideoDTO.Request>> getVideoList() throws RuntimeException {
+        List<VideoDTO.Request> videoList = postService.getVideoList();
         return ResponseEntity.ok(videoList);
+    }
+
+    //활동 영상 조회
+    @GetMapping("/video/{videoId}")
+    public ResponseEntity<VideoDTO.Request> getVideo(@PathVariable("videoId") Long videoId) throws RuntimeException {
+        VideoDTO.Request video = postService.getVideo(videoId);
+        System.out.println("videoId" + videoId);
+        return ResponseEntity.ok(video);
+    }
+
+    //활동 영상 수정
+    @PutMapping("/video/{videoId}")
+    public ResponseEntity<Post> updateVideo(
+            @PathVariable("videoId") Long videoId,
+            @RequestBody(required = false) VideoDTO.UpdateRequest videoDTO
+    ) {
+        System.out.println("Updating post with ID: " + videoId);
+        System.out.println("Title: " + videoDTO.getTitle());
+        System.out.println("Content: " + videoDTO.getContent());
+
+        Post updatedPost = postService.updateVideo(videoId, videoDTO);
+        return ResponseEntity.ok(updatedPost);
     }
 
 }
