@@ -29,6 +29,7 @@ public class Post {
     private String title;
     private String content;
 
+    private String storedFileName;
     @Enumerated(EnumType.STRING)
     private Category category;
     @Lob
