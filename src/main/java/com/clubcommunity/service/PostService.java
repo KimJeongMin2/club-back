@@ -114,6 +114,7 @@ public class PostService {
                 .member(memberService.convertMemberDTOToMember(postDTO.getMember()))
                 .content(postDTO.getContent())
                 .category(postDTO.getCategory())
+                .storedFileName(postDTO.getStoredFileName())
                 .club(clubService.convertClubDTOToClub(postDTO.getClub()));
 
 
@@ -173,6 +174,8 @@ public class PostService {
             postDTO.setContent(post.getContent());
             postDTO.setCategory(post.getCategory());
             postDTO.setCreatedAt(post.getCreateAt());
+            System.out.println("post.getStoredFileName() = " + post.getStoredFileName());
+            postDTO.setStoredFileName(post.getStoredFileName());
             postDTO.setMember(memberService.convertMemberToMemberDTO(post.getMember())); // Member 엔티티를 MemberDTO로 변환
             postDTO.setPhoto(post.getPhoto());
             postDTO.setFile(post.getFile());
@@ -188,7 +191,7 @@ public class PostService {
         post.setMember(memberService.convertMemberDTOToMember(postDTO.getMember()));
         post.setContent(postDTO.getContent());
         post.setCategory(postDTO.getCategory());
-
+        post.setStoredFileName(postDTO.getStoredFileName());
         if (!files.isEmpty()) {
             try {
                 post.setPhoto(files.getBytes());

@@ -25,6 +25,7 @@ public class PostDTO {
     private ClubDTO club;
     private byte[] photo;
 
+    private String storedFileName;
     private byte[] file;
 
 }

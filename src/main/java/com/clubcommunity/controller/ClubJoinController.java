@@ -9,11 +9,10 @@ import com.clubcommunity.service.PostService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/join-club")
@@ -37,5 +36,23 @@ public class ClubJoinController {
         ClubJoin savedPost = clubJoinService.createClubJoin(clubJoinDTO, files);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedPost);
     }
+    @GetMapping
+    public ResponseEntity<List<ClubJoinDTO>> getAllClubJoins() {
+        List<ClubJoinDTO> posts = clubJoinService.getAllClubJoin();
+        return ResponseEntity.ok(posts);
+    }
+    @PutMapping("/{id}/approve")
+    public ResponseEntity<ClubJoin> approveClubJoin(@PathVariable(name = "id") Long id) {
+        ClubJoin approvedClubJoin = clubJoinService.approveClubJoin(id);
+        return ResponseEntity.ok(approvedClubJoin);
+    }
+
+    @PutMapping("/approve")
+    public ResponseEntity<List<ClubJoin>> approveMultipleClubJoins(@RequestBody List<Long> clubJoinIds) {
+        System.out.println("clubJoinIds = " + clubJoinIds);
+        List<ClubJoin> approvedClubJoins = clubJoinService.approveMultipleClubJoins(clubJoinIds);
+        return ResponseEntity.ok(approvedClubJoins);
+    }
+
 
 }
