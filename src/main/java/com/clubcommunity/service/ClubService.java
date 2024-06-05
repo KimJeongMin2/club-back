@@ -2,14 +2,15 @@ package com.clubcommunity.service;
 
 import com.clubcommunity.domain.*;
 import com.clubcommunity.dto.ClubDTO;
-import com.clubcommunity.dto.MemberDTO;
-import com.clubcommunity.dto.PostDTO;
+import com.clubcommunity.dto.ClubDetailDTO;
 import com.clubcommunity.repository.ClubMemberRepository;
 import com.clubcommunity.repository.ClubRepository;
 import com.clubcommunity.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +21,7 @@ public class ClubService {
     private final ClubRepository clubRepository;
     private final ClubMemberRepository clubMemberRepository;
     private final MemberService memberService;
+    private final MemberRepository memberRepository;
 
 
     public Club makeClub(ClubDTO clubDTO) {
@@ -88,5 +90,47 @@ public class ClubService {
     }
 
 
+    public List<ClubDetailDTO> getMyClubs(Long studentId) {
+        Member member = memberRepository.findById(studentId)
+                .orElseThrow(()-> new RuntimeException("해당하는 유저를 찾을 수 없습니다."));
 
+        List<ClubMember> clubMembers = clubMemberRepository.findByMemberAndRoleType(member, RoleType.MASTER);
+        List<ClubDetailDTO> clubDTOs = new ArrayList<>();
+
+        for (ClubMember clubMember : clubMembers) {
+            Club club = clubMember.getClub();
+
+            ClubDetailDTO clubDTO = ClubDetailDTO.builder()
+                    .clubId(club.getClubId())
+                    .clubName(club.getClubName())
+                    .introduction(club.getIntroduction())
+                    .history(club.getHistory())
+                    .meetingTime(club.getMeetingTime())
+                    .photo(club.getPhoto())
+                    .staffList(club.getStaffList())
+                    .build();
+
+            clubDTOs.add(clubDTO);
+        }
+        return clubDTOs;
+    }
+
+    public Club makeClubBaseInfo(Long clubId, ClubDetailDTO clubDetailDTO, MultipartFile photo, MultipartFile file
+    ) throws IOException {
+        Club club = clubRepository.findById(clubId)
+                .orElseThrow(()-> new RuntimeException("해당하는 동아리를 찾을 수 없습니다."));
+
+        club.updateBaseInfo(clubDetailDTO.getClubName(), clubDetailDTO.getIntroduction(), clubDetailDTO.getHistory()
+                , clubDetailDTO.getMeetingTime(), photo, file);
+
+        return clubRepository.save(club);
+    }
+
+
+    public Club getClubBaseInfo(Long clubId) {
+        Club club = clubRepository.findById(clubId)
+                .orElseThrow(()-> new RuntimeException("해당하는 동아리를 찾을 수 없습니다."));
+
+        return club;
+    }
 }
