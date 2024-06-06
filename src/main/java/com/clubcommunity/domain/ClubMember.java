@@ -31,4 +31,14 @@ public class ClubMember {
 
     @Enumerated(EnumType.STRING)
     private RoleType roleType;
+
+    public void approve() {
+        this.status = Status.APPROVAL;
+        this.roleType = RoleType.MASTER;
+    }
+
+    public void reject(String refusalReason) {
+        this.status = Status.REFUSE;
+        this.refusalReason = refusalReason;
+    }
 }

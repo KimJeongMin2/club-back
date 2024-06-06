@@ -63,4 +63,5 @@ public class Club {
             this.staffList = file.getBytes();
         }
     }
+
 }
