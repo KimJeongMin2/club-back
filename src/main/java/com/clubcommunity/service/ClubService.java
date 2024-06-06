@@ -1,6 +1,7 @@
 package com.clubcommunity.service;
 
 import com.clubcommunity.domain.*;
+import com.clubcommunity.dto.ClubApplicationDTO;
 import com.clubcommunity.dto.ClubDTO;
 import com.clubcommunity.dto.ClubDetailDTO;
 import com.clubcommunity.repository.ClubMemberRepository;
@@ -45,7 +46,7 @@ public class ClubService {
                 .club(savedClub)
                 .memberStatus(MemberStatus.ACTIVITY)
                 .status(Status.GO_OVER)
-                .roleType(RoleType.MASTER)
+                .roleType(RoleType.MEMBER)
                 .build();
 
         clubMemberRepository.save(clubMember);
@@ -142,6 +143,68 @@ public class ClubService {
         return club;
     }
 
+    public List<ClubApplicationDTO> getAllApplicationClubList() {
+        List<ClubApplicationDTO> clubDTOs = new ArrayList<>();
 
+        List<Club> clubs = clubRepository.findAll();
+
+        for (Club club : clubs) {
+            ClubMember clubMember = clubMemberRepository.findByClubAndStatus(club, Status.GO_OVER);
+
+            if(clubMember != null) {
+                ClubApplicationDTO clubDTO = ClubApplicationDTO.builder()
+                        .clubId(club.getClubId())
+                        .type(club.getType().getText())
+                        .clubName(club.getClubName())
+                        .applicantName(club.getApplicantName())
+                        .applicantDepartment(club.getApplicantDepartment())
+                        .applicantId(club.getApplicantId())
+                        .applicantPhone(club.getApplicantPhone())
+                        .professorName(club.getProfessorName())
+                        .professorMajor(club.getProfessorMajor())
+                        .professorPhone(club.getProfessorPhone())
+                        .clubStatus(clubMember.getStatus().getText())
+                        .build();
+
+                clubDTOs.add(clubDTO);
+            }
+        }
+
+        return clubDTOs;
+
+    }
+
+    public void approveClub(Long clubId) {
+        Club club = clubRepository.findById(clubId)
+                .orElseThrow(()-> new RuntimeException("해당하는 동아리가 존재하지 않습니다."));
+
+        ClubMember clubMember = clubMemberRepository.findByClubAndStatus(club, Status.GO_OVER);
+        clubMember.approve();
+        clubMemberRepository.save(clubMember);
+    }
+
+    public void approveAllClubs(List<Long> clubIds) {
+        clubIds.forEach(clubId -> {
+            Club club = clubRepository.findById(clubId)
+                    .orElseThrow(() -> new RuntimeException("해당하는 동아리가 존재하지 않습니다."));
+
+            ClubMember clubMember = clubMemberRepository.findByClubAndStatus(club, Status.GO_OVER);
+            if (clubMember != null) {
+                clubMember.approve();
+            } else {
+                throw new RuntimeException("해당 상태의 클럽 멤버가 존재하지 않습니다.");
+            }
+            clubMemberRepository.save(clubMember);
+        });
+    }
+
+    public void rejectClub(Long clubId, String refusalReason) {
+        Club club = clubRepository.findById(clubId)
+                .orElseThrow(()-> new RuntimeException("해당하는 동아리가 존재하지 않습니다."));
+
+        ClubMember clubMember = clubMemberRepository.findByClubAndStatus(club, Status.GO_OVER);
+        clubMember.reject(refusalReason);
+        clubMemberRepository.save(clubMember);
+    }
 
 }
