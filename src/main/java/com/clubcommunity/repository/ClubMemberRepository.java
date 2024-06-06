@@ -1,6 +1,6 @@
 package com.clubcommunity.repository;
 
-<<<<<<< HEAD
+
 import com.clubcommunity.domain.ClubMember;
 
 import com.clubcommunity.domain.Member;
