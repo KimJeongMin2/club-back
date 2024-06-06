@@ -87,6 +87,14 @@ public class ClubService {
         return clubDTO;
     }
 
+    public List<Club> getClubsForMember(Member member) {
+        List<ClubMember> clubMembers = clubMemberRepository.findByMember(member);
+        List<Club> clubs = new ArrayList<>();
+        for (ClubMember clubMember : clubMembers) {
+            clubs.add(clubMember.getClub());
+        }
+        return clubs;
+    }
 
 
 }

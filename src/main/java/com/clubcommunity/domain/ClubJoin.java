@@ -31,11 +31,6 @@ public class ClubJoin {
     @Column(columnDefinition = "MEDIUMBLOB")
     private byte[] file;
 
-    @Enumerated(EnumType.STRING)
-    private MemberStatus memberStatus;
-
-    @Enumerated(EnumType.STRING)
-    private Status status;
 
     @CreationTimestamp
     private LocalDateTime createAt = LocalDateTime.now();

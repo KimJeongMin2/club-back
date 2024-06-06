@@ -36,23 +36,50 @@ public class ClubJoinController {
         ClubJoin savedPost = clubJoinService.createClubJoin(clubJoinDTO, files);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedPost);
     }
+
     @GetMapping
-    public ResponseEntity<List<ClubJoinDTO>> getAllClubJoins() {
-        List<ClubJoinDTO> posts = clubJoinService.getAllClubJoin();
+    public ResponseEntity<List<ClubJoinDTO>> getAllClubJoins(@RequestHeader(value="userId", required = true) Long userId) {
+        System.out.println("userId = " + userId);
+        List<ClubJoinDTO> posts = clubJoinService.getAllClubJoinForUser(userId);
         return ResponseEntity.ok(posts);
     }
-    @PutMapping("/{id}/approve")
-    public ResponseEntity<ClubJoin> approveClubJoin(@PathVariable(name = "id") Long id) {
-        ClubJoin approvedClubJoin = clubJoinService.approveClubJoin(id);
-        return ResponseEntity.ok(approvedClubJoin);
-    }
 
-    @PutMapping("/approve")
-    public ResponseEntity<List<ClubJoin>> approveMultipleClubJoins(@RequestBody List<Long> clubJoinIds) {
-        System.out.println("clubJoinIds = " + clubJoinIds);
-        List<ClubJoin> approvedClubJoins = clubJoinService.approveMultipleClubJoins(clubJoinIds);
-        return ResponseEntity.ok(approvedClubJoins);
-    }
+//    @GetMapping
+//    public ResponseEntity<List<ClubJoinDTO>> getAllClubJoins(@RequestHeader(value="userId", required = true) String userId) {
+//        List<ClubJoinDTO> posts = clubJoinService.getAllClubJoinForUser(userId);
+//        return ResponseEntity.ok(posts);
+//    }
+
+//    @GetMapping
+//    public ResponseEntity<List<ClubJoinDTO>> getAllClubJoins() {
+//        List<ClubJoinDTO> posts = clubJoinService.getAllClubJoin();
+//        return ResponseEntity.ok(posts);
+//    }
+//    @PutMapping("/{id}/approve")
+//    public ResponseEntity<ClubJoin> approveClubJoin(@PathVariable(name = "id") Long id) {
+//        ClubJoin approvedClubJoin = clubJoinService.approveClubJoin(id);
+//        return ResponseEntity.ok(approvedClubJoin);
+//    }
+//
+//    @PutMapping("/approve")
+//    public ResponseEntity<List<ClubJoin>> approveMultipleClubJoins(@RequestBody List<Long> clubJoinIds) {
+//        System.out.println("clubJoinIds = " + clubJoinIds);
+//        List<ClubJoin> approvedClubJoins = clubJoinService.approveMultipleClubJoins(clubJoinIds);
+//        return ResponseEntity.ok(approvedClubJoins);
+//    }
+//
+//    @PutMapping("/{id}/reject")
+//    public ResponseEntity<ClubJoin> rejectClubJoin(@PathVariable(name = "id") Long id) {
+//        ClubJoin rejectedClubJoin = clubJoinService.rejectClubJoin(id);
+//        return ResponseEntity.ok(rejectedClubJoin);
+//    }
+//
+//    @PutMapping("/reject")
+//    public ResponseEntity<List<ClubJoin>> rejectMultipleClubJoins(@RequestBody List<Long> clubJoinIds) {
+//        System.out.println("clubJoinIds = " + clubJoinIds);
+//        List<ClubJoin> rejectedClubJoins = clubJoinService.rejectMultipleClubJoins(clubJoinIds);
+//        return ResponseEntity.ok(rejectedClubJoins);
+//    }
 
 
 }
