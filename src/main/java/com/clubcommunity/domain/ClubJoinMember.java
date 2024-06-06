@@ -21,6 +21,9 @@ public class ClubJoinMember {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "club_join_id")
     private ClubJoin clubJoin;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "student_id")
+    private Member member;
 
     @Enumerated(EnumType.STRING)
     private MemberStatus memberStatus;

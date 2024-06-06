@@ -2,6 +2,7 @@ package com.clubcommunity.service;
 
 import com.clubcommunity.domain.*;
 import com.clubcommunity.dto.ClubJoinDTO;
+import com.clubcommunity.dto.ClubJoinMemberDTO;
 import com.clubcommunity.dto.PostDTO;
 import com.clubcommunity.repository.ClubJoinMemberRepository;
 import com.clubcommunity.repository.ClubJoinRepository;
@@ -28,10 +29,10 @@ public class ClubJoinService {
         this.memberService = memberService;
         this.clubService = clubService;
     }
-
     public ClubJoin createClubJoin(ClubJoinDTO clubJoinDTO, MultipartFile files) {
+        Member member = memberService.convertMemberDTOToMember(clubJoinDTO.getMember());
+
         ClubJoin.ClubJoinBuilder clubJoinBuilder = ClubJoin.builder()
-                .member(memberService.convertMemberDTOToMember(clubJoinDTO.getMember()))
                 .club(clubService.convertClubDTOToClub(clubJoinDTO.getClub()))
                 .title(clubJoinDTO.getTitle())
                 .createAt(clubJoinDTO.getCreatedAt());
@@ -45,9 +46,10 @@ public class ClubJoinService {
         ClubJoin clubJoin = clubJoinBuilder.build();
         clubJoin = clubJoinRepository.save(clubJoin);
         System.out.println("clubJoin = " + clubJoin);
-        // ClubMember 생성 및 저장
+
         ClubJoinMember clubJoinMember = ClubJoinMember.builder()
                 .clubJoin(clubJoin)
+                .member(member) // Member 설정
                 .memberStatus(MemberStatus.ACTIVITY)
                 .status(Status.GO_OVER)
                 .refusalReason(clubJoinDTO.getRefusalReason())
@@ -69,11 +71,12 @@ public class ClubJoinService {
             for (ClubJoin clubJoin : clubJoins) {
                 List<ClubJoinMember> clubJoinMembers = clubJoinMemberRepository.findByClubJoinAndStatus(clubJoin, Status.GO_OVER);
                 for (ClubJoinMember clubJoinMember : clubJoinMembers) {
+                    System.out.println("clubJoinMember.getMember() = " + clubJoinMember.getMember());
                     ClubJoinDTO clubJoinDTO = new ClubJoinDTO();
                     clubJoinDTO.setClubJoinId(clubJoin.getClubJoinId());
                     clubJoinDTO.setTitle(clubJoin.getTitle());
                     clubJoinDTO.setCreatedAt(clubJoin.getCreateAt());
-                    clubJoinDTO.setMember(memberService.convertMemberToMemberDTO(clubJoin.getMember()));
+                    clubJoinDTO.setMember(memberService.convertMemberToMemberDTO(clubJoinMember.getMember()));
                     clubJoinDTO.setClub(clubService.convertClubToClubDTO(clubJoin.getClub()));
                     clubJoinDTO.setStatus(clubJoinMember.getStatus());
                     clubJoinDTO.setFile(clubJoin.getFile());
@@ -82,6 +85,82 @@ public class ClubJoinService {
             }
         }
         return clubJoinDTOS;
+    }
+
+//    public ClubJoin createClubJoin(ClubJoinDTO clubJoinDTO, MultipartFile files) {
+//        ClubJoin.ClubJoinBuilder clubJoinBuilder = ClubJoin.builder()
+//                .member(memberService.convertMemberDTOToMember(clubJoinDTO.getMember()))
+//                .club(clubService.convertClubDTOToClub(clubJoinDTO.getClub()))
+//                .title(clubJoinDTO.getTitle())
+//                .createAt(clubJoinDTO.getCreatedAt());
+//
+//        try {
+//            clubJoinBuilder.file(files.getBytes());
+//        } catch (IOException e) {
+//            log.error("Error uploading file: {}", e.getMessage());
+//        }
+//
+//        ClubJoin clubJoin = clubJoinBuilder.build();
+//        clubJoin = clubJoinRepository.save(clubJoin);
+//        System.out.println("clubJoin = " + clubJoin);
+//        // ClubMember 생성 및 저장
+//        ClubJoinMember clubJoinMember = ClubJoinMember.builder()
+//                .clubJoin(clubJoin)
+//                .memberStatus(MemberStatus.ACTIVITY)
+//                .status(Status.GO_OVER)
+//                .refusalReason(clubJoinDTO.getRefusalReason())
+//                .roleType(RoleType.MEMBER)
+//                .build();
+//        clubJoinMemberRepository.save(clubJoinMember);
+//
+//        return clubJoin;
+//    }
+
+//    public List<ClubJoinDTO> getAllClubJoinForUser(Long userId) {
+//        Member member = memberService.findMemberById(userId);
+//        System.out.println("member = " + member);
+//        List<Club> clubs = clubService.getClubsForMember(member);
+//
+//        List<ClubJoinDTO> clubJoinDTOS = new ArrayList<>();
+//        for (Club club : clubs) {
+//            List<ClubJoin> clubJoins = clubJoinRepository.findByClub(club);
+//            for (ClubJoin clubJoin : clubJoins) {
+//                List<ClubJoinMember> clubJoinMembers = clubJoinMemberRepository.findByClubJoinAndStatus(clubJoin, Status.GO_OVER);
+//                for (ClubJoinMember clubJoinMember : clubJoinMembers) {
+//                    ClubJoinDTO clubJoinDTO = new ClubJoinDTO();
+//                    clubJoinDTO.setClubJoinId(clubJoin.getClubJoinId());
+//                    clubJoinDTO.setTitle(clubJoin.getTitle());
+//                    clubJoinDTO.setCreatedAt(clubJoin.getCreateAt());
+//                    clubJoinDTO.setMember(memberService.convertMemberToMemberDTO(clubJoin.getMember()));
+//                    clubJoinDTO.setClub(clubService.convertClubToClubDTO(clubJoin.getClub()));
+//                    clubJoinDTO.setStatus(clubJoinMember.getStatus());
+//                    clubJoinDTO.setFile(clubJoin.getFile());
+//                    clubJoinDTOS.add(clubJoinDTO);
+//                }
+//            }
+//        }
+//        return clubJoinDTOS;
+//    }
+
+    public List<ClubJoinMemberDTO> getApprovedMembersForClub(Long userId) {
+        Member clubOwner = memberService.findMemberById(userId);
+        List<Club> clubs = clubService.getClubsForMember(clubOwner);
+
+        List<ClubJoinMemberDTO> approvedMembers = new ArrayList<>();
+        for (Club club : clubs) {
+            List<ClubJoin> clubJoins = clubJoinRepository.findByClub(club);
+            for (ClubJoin clubJoin : clubJoins) {
+                List<ClubJoinMember> clubJoinMembers = clubJoinMemberRepository.findByClubJoinAndStatus(clubJoin, Status.APPROVAL);
+                for (ClubJoinMember clubJoinMember : clubJoinMembers) {
+                    ClubJoinMemberDTO clubJoinMemberDTO = new ClubJoinMemberDTO();
+                    clubJoinMemberDTO.setClubJoinId(clubJoin.getClubJoinId());
+                    clubJoinMemberDTO.setMember(memberService.convertMemberToMemberDTO(clubJoinMember.getMember()));
+                    clubJoinMemberDTO.setStatus(clubJoinMember.getStatus());
+                    approvedMembers.add(clubJoinMemberDTO);
+                }
+            }
+        }
+        return approvedMembers;
     }
 
 

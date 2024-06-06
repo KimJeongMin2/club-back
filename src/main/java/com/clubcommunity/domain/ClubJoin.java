@@ -17,9 +17,9 @@ public class ClubJoin {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long clubJoinId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "student_id")
-    private Member member;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "student_id")
+//    private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "club_id")

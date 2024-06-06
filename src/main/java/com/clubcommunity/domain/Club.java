@@ -3,6 +3,9 @@ package com.clubcommunity.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,12 +41,26 @@ public class Club {
     @Lob
     @Column(columnDefinition = "BLOB")
     private byte[] photo;
-    @CreatedDate
-    private LocalDateTime meetingTime;
+    private String meetingTime;
     @Lob
     @Column(columnDefinition = "BLOB")
     private byte[] staffList;
 
     @OneToMany(mappedBy = "club", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ClubMember> clubMembers = new ArrayList<>();
+
+    public void updateBaseInfo(String clubName, String introduction, String history, String meetingTime,
+                             MultipartFile photo, MultipartFile file) throws IOException {
+        this.clubName = (clubName != null)? clubName : this.clubName;
+        this.introduction = (introduction != null)? introduction : this.introduction;
+        this.history = (history != null)? history : this.history;
+        this.meetingTime = (meetingTime != null)? meetingTime : this.meetingTime;
+        if (photo != null && !photo.isEmpty()) {
+            this.photo = photo.getBytes();
+        }
+
+        if (file != null && !file.isEmpty()) {
+            this.staffList = file.getBytes();
+        }
+    }
 }

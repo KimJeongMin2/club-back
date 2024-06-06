@@ -100,7 +100,7 @@ public class PostController {
 
 
     //    @PostMapping(value = "/new-recruitment-posts", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-//    public ResponseEntity<Post> CreateMemberRecruitment(
+//    public ResponseEntity<Post> CreateMemberRecruitment(t
 //            @RequestPart(value = "dto", required = false) PostDTO postDTO,
 //            @RequestPart(value = "photo", required = false) MultipartFile files
 //    ) {

@@ -3,6 +3,7 @@ package com.clubcommunity.controller;
 import com.clubcommunity.domain.ClubJoin;
 import com.clubcommunity.domain.Post;
 import com.clubcommunity.dto.ClubJoinDTO;
+import com.clubcommunity.dto.ClubJoinMemberDTO;
 import com.clubcommunity.dto.PostDTO;
 import com.clubcommunity.service.ClubJoinService;
 import com.clubcommunity.service.PostService;
@@ -43,6 +44,14 @@ public class ClubJoinController {
         List<ClubJoinDTO> posts = clubJoinService.getAllClubJoinForUser(userId);
         return ResponseEntity.ok(posts);
     }
+
+    @GetMapping("/approved-members")
+    public ResponseEntity<List<ClubJoinMemberDTO>> getApprovedMembersForClub(@RequestHeader(value="userId", required = true) Long userId) {
+        System.out.println("userId = " + userId);
+        List<ClubJoinMemberDTO> approvedMembers = clubJoinService.getApprovedMembersForClub(userId);
+        return ResponseEntity.ok(approvedMembers);
+    }
+
 
 //    @GetMapping
 //    public ResponseEntity<List<ClubJoinDTO>> getAllClubJoins(@RequestHeader(value="userId", required = true) String userId) {

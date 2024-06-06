@@ -28,6 +28,7 @@ public class MemberService {
         return member;
     }
     public MemberDTO convertMemberToMemberDTO(Member member) {
+        System.out.println("member임 = " + member);
         MemberDTO memberDTO = new MemberDTO();
         memberDTO.setStudentId(member.getStudentId());
         memberDTO.setName(member.getName());
