@@ -90,6 +90,14 @@ public class ClubService {
         return clubDTO;
     }
 
+    public List<Club> getClubsForMember(Member member) {
+        List<ClubMember> clubMembers = clubMemberRepository.findByMember(member);
+        List<Club> clubs = new ArrayList<>();
+        for (ClubMember clubMember : clubMembers) {
+            clubs.add(clubMember.getClub());
+        }
+        return clubs;
+    }
 
     public List<ClubDetailDTO> getMyClubs(Long studentId) {
         Member member = memberRepository.findById(studentId)
@@ -198,4 +206,5 @@ public class ClubService {
         clubMember.reject(refusalReason);
         clubMemberRepository.save(clubMember);
     }
+
 }

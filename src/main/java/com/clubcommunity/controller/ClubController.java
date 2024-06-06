@@ -38,7 +38,7 @@ public class ClubController {
 
     // 관리자의 내 동아리 조회
     @GetMapping("/my/{studentId}")
-    public ResponseEntity<List<ClubDetailDTO>> getMyClubs(@PathVariable Long studentId) {
+    public ResponseEntity<List<ClubDetailDTO>> getMyClubs(@PathVariable("studentId") Long studentId) {
         List<ClubDetailDTO> clubDTOS = clubService.getMyClubs(studentId);
         return ResponseEntity.ok(clubDTOS);
     }
@@ -68,6 +68,7 @@ public class ClubController {
         Club club = clubService.getClubBaseInfo(clubId);
         return ResponseEntity.ok(club);
     }
+
 
     @GetMapping("/applicationClubList")
     public ResponseEntity<List<ClubApplicationDTO>> getAllApplicationClubList() {

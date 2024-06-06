@@ -2,10 +2,18 @@ package com.clubcommunity.service;
 
 import com.clubcommunity.domain.Member;
 import com.clubcommunity.dto.MemberDTO;
+import com.clubcommunity.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MemberService {
+
+    private final MemberRepository memberRepository;
+
+
+    public MemberService(MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
+    }
 
     public Member convertMemberDTOToMember(MemberDTO memberDTO) {
         Member member = new Member();
@@ -20,6 +28,7 @@ public class MemberService {
         return member;
     }
     public MemberDTO convertMemberToMemberDTO(Member member) {
+        System.out.println("member임 = " + member);
         MemberDTO memberDTO = new MemberDTO();
         memberDTO.setStudentId(member.getStudentId());
         memberDTO.setName(member.getName());
@@ -30,5 +39,9 @@ public class MemberService {
         memberDTO.setEmail(member.getEmail());
 //        memberDTO.setRoleType(member.getRoleType());
         return memberDTO;
+    }
+    public Member findMemberById(Long userId) {
+        return memberRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다. ID: " + userId));
     }
 }

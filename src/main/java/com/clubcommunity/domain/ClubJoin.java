@@ -17,9 +17,9 @@ public class ClubJoin {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long clubJoinId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "student_id")
-    private Member member;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "student_id")
+//    private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "club_id")
@@ -31,11 +31,6 @@ public class ClubJoin {
     @Column(columnDefinition = "MEDIUMBLOB")
     private byte[] file;
 
-    @Enumerated(EnumType.STRING)
-    private MemberStatus memberStatus;
-
-    @Enumerated(EnumType.STRING)
-    private Status status;
 
     @CreationTimestamp
     private LocalDateTime createAt = LocalDateTime.now();
