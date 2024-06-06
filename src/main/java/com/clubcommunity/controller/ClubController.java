@@ -1,10 +1,7 @@
 package com.clubcommunity.controller;
 
 import com.clubcommunity.domain.Club;
-import com.clubcommunity.domain.Post;
-import com.clubcommunity.dto.ClubDTO;
-import com.clubcommunity.dto.ClubDetailDTO;
-import com.clubcommunity.dto.PostDTO;
+import com.clubcommunity.dto.*;
 import com.clubcommunity.service.ClubService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -64,7 +61,7 @@ public class ClubController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedClub);
     }
 
-    @GetMapping(value = "/detail/{clubId}")
+    @GetMapping( "/detail/{clubId}")
     public ResponseEntity<Club> getClubBaseInfo(
             @PathVariable("clubId") Long clubId
     ) throws IOException {
@@ -72,7 +69,29 @@ public class ClubController {
         return ResponseEntity.ok(club);
     }
 
+    @GetMapping("/applicationClubList")
+    public ResponseEntity<List<ClubApplicationDTO>> getAllApplicationClubList() {
+        List<ClubApplicationDTO> clubs = clubService.getAllApplicationClubList();
+        return ResponseEntity.ok(clubs);
+    }
 
+    @PutMapping("/{clubId}/approve")
+    public ResponseEntity<Club> approveClub(@PathVariable Long clubId) {
+        clubService.approveClub(clubId);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PutMapping("/approve")
+    public ResponseEntity<List<Club>> approveMultipleClubJoins(@RequestBody List<Long> clubIds) {
+        clubService.approveAllClubs(clubIds);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PutMapping("/{clubId}/reject")
+    public ResponseEntity<Club> rejectClub(@PathVariable Long clubId, @RequestBody String refusalReason) {
+        clubService.rejectClub(clubId, refusalReason);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
 
 
 }
