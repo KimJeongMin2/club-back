@@ -1,6 +1,7 @@
 package com.clubcommunity.service;
 
 import com.clubcommunity.domain.*;
+import com.clubcommunity.dto.ClubDTO;
 import com.clubcommunity.dto.ClubJoinDTO;
 import com.clubcommunity.dto.ClubJoinMemberDTO;
 import com.clubcommunity.dto.PostDTO;
@@ -156,6 +157,12 @@ public class ClubJoinService {
                     clubJoinMemberDTO.setClubJoinId(clubJoin.getClubJoinId());
                     clubJoinMemberDTO.setMember(memberService.convertMemberToMemberDTO(clubJoinMember.getMember()));
                     clubJoinMemberDTO.setStatus(clubJoinMember.getStatus());
+                    clubJoinMemberDTO.setMemberStatus(clubJoinMember.getMemberStatus());
+                    ClubDTO clubDTO = new ClubDTO();
+                    clubDTO.setClubId(club.getClubId());
+                    clubDTO.setClubName(club.getClubName());
+                    clubJoinMemberDTO.setClub(clubDTO);
+
                     approvedMembers.add(clubJoinMemberDTO);
                 }
             }
