@@ -3,6 +3,7 @@ package com.clubcommunity.controller;
 import com.clubcommunity.domain.ClubJoin;
 import com.clubcommunity.domain.ClubJoinMember;
 import com.clubcommunity.dto.ClubJoinDTO;
+import com.clubcommunity.dto.ClubJoinMemberDTO;
 import com.clubcommunity.dto.ClubJoinRejectDTO;
 import com.clubcommunity.service.ClubJoinMemberService;
 import org.springframework.http.ResponseEntity;
@@ -46,6 +47,15 @@ public class ClubJoinMemberController {
         return ResponseEntity.ok(rejectedClubJoins);
     }
 
-
+    @PutMapping("/{id}/withdraw")
+    public ResponseEntity<ClubJoinMember> withdrawClubJoinMember(@PathVariable(name = "id") Long id) {
+        ClubJoinMember withdrawnClubJoinMember = clubJoinMemberService.withdrawClubJoinMember(id);
+        return ResponseEntity.ok(withdrawnClubJoinMember);
+    }
+    @PutMapping("/withdraw")
+    public ResponseEntity<List<ClubJoinMember>> withdrawMultipleClubJoinMembers(@RequestBody List<Long> clubJoinMemberIds) {
+        List<ClubJoinMember> withdrawnClubJoinMembers = clubJoinMemberService.withdrawMultipleClubJoinMembers(clubJoinMemberIds);
+        return ResponseEntity.ok(withdrawnClubJoinMembers);
+    }
 
 }

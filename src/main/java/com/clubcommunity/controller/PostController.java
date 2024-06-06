@@ -97,23 +97,7 @@ public class PostController {
         Post savedPost = postService.createMemberRecruitment(postDTO, photo, file);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedPost);
     }
-
-
-    //    @PostMapping(value = "/new-recruitment-posts", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-//    public ResponseEntity<Post> CreateMemberRecruitment(t
-//            @RequestPart(value = "dto", required = false) PostDTO postDTO,
-//            @RequestPart(value = "photo", required = false) MultipartFile files
-//    ) {
-//
-//        System.out.println("Title: " + postDTO.getTitle());
-//        System.out.println("Content: " + postDTO.getContent());
-//        System.out.println("Category: " + postDTO.getCategory());
-//        System.out.println("Member: " + postDTO.getMember());
-//        System.out.println("NoticeVisibility: " + postDTO.getNoticeVisibilityType());
-//        System.out.println("files: " + files);
-//        Post savedPost = postService.createMemberRecruitment(postDTO, files);
-//        return ResponseEntity.status(HttpStatus.CREATED).body(savedPost);
-//    }
+    
     @GetMapping("/recruitment")
     public ResponseEntity<List<PostDTO>> getAllPostsRecruitment() {
         List<PostDTO> posts = postService.getAllPostsRecruitment();
