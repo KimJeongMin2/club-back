@@ -2,6 +2,8 @@ package com.clubcommunity.repository;
 
 import com.clubcommunity.domain.Category;
 import com.clubcommunity.domain.Post;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -14,6 +16,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     // Read (Find)
     Optional<Post> findById(Long id);
     List<Post> findAll();
+
+    Page<Post> findByCategoryOrderByCreateAtDesc(Category category, Pageable pageable);
 
     List<Post> findByCategory(Category category);
 

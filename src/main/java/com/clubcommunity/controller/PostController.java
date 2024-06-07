@@ -48,19 +48,19 @@ public class PostController {
         List<PostDTO> posts = postService.getAllPosts();
         return ResponseEntity.ok(posts);
     }
+    @GetMapping("/recent/notices")
+    public ResponseEntity<List<PostDTO>> getRecentNoticePosts() {
+        List<PostDTO> posts = postService.getRecentNoticePosts();
+        return ResponseEntity.ok(posts);
+    }
+
+
 
     @GetMapping("/{id}")
     public ResponseEntity<Post> getPostById(@PathVariable Long id){
         Post post = postService.getPostById(id);
         return ResponseEntity.ok(post);
     }
-
-//    @PutMapping("/{id}")
-//    public ResponseEntity<Post> updatePost(@PathVariable Long id, @RequestBody PostDTO postDTO){
-//        Post updatedPost = postService.updatePost(id, postDTO);
-//        return ResponseEntity.ok(updatedPost);
-//    }
-
     @PutMapping(value = "/{noticeId}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Post> updatePost(
             @PathVariable("noticeId") Long noticeId,
@@ -87,6 +87,7 @@ public class PostController {
         return ResponseEntity.noContent().build();
     }
 
+
     @PostMapping(value = "/new-recruitment-posts", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Post> CreateMemberRecruitment(
             @RequestPart(value = "dto", required = false) PostDTO postDTO,
@@ -101,6 +102,11 @@ public class PostController {
     @GetMapping("/recruitment")
     public ResponseEntity<List<PostDTO>> getAllPostsRecruitment() {
         List<PostDTO> posts = postService.getAllPostsRecruitment();
+        return ResponseEntity.ok(posts);
+    }
+    @GetMapping("/recent/recruit")
+    public ResponseEntity<List<PostDTO>> getRecentRecruitPosts() {
+        List<PostDTO> posts = postService.getRecentRecruitPosts();
         return ResponseEntity.ok(posts);
     }
 
