@@ -6,6 +6,10 @@ import com.clubcommunity.dto.PostDTO;
 import com.clubcommunity.dto.VideoDTO;
 import com.clubcommunity.repository.PostRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,8 +38,8 @@ public class PostService {
                 .member(memberService.convertMemberDTOToMember(postDTO.getMember()))
                 .content(postDTO.getContent())
                 .category(postDTO.getCategory())
-                .noticeVisibilityType(postDTO.getNoticeVisibilityType());
-
+                .noticeVisibilityType(postDTO.getNoticeVisibilityType())
+                .club(clubService.convertClubDTOToClub(postDTO.getClub()));
         try {
             postBuilder.photo(files.getBytes());
         } catch (IOException e) {
@@ -59,14 +63,33 @@ public class PostService {
             postDTO.setCreatedAt(post.getCreateAt());
             postDTO.setMember(memberService.convertMemberToMemberDTO(post.getMember())); // Member 엔티티를 MemberDTO로 변환
             postDTO.setPhoto(post.getPhoto());
+            postDTO.setClub(clubService.convertClubToClubDTO(post.getClub()));
             postDTOs.add(postDTO);
         }
         return postDTOs;
     }
 
-//    public List<Post> getAllPosts(){
-//        return postRepository.findAll();
-//    }
+    public List<PostDTO> getRecentNoticePosts() {
+        Pageable topFive = PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "createAt"));
+        Page<Post> page = postRepository.findByCategoryOrderByCreateAtDesc(Category.NOTICE, topFive);
+        List<Post> posts = page.getContent();
+
+        List<PostDTO> postDTOs = new ArrayList<>();
+        for (Post post : posts) {
+            PostDTO postDTO = new PostDTO();
+            postDTO.setPostId(post.getPostId());
+            postDTO.setTitle(post.getTitle());
+            postDTO.setContent(post.getContent());
+            postDTO.setCategory(post.getCategory());
+            postDTO.setNoticeVisibilityType(post.getNoticeVisibilityType());
+            postDTO.setCreatedAt(post.getCreateAt());
+            postDTO.setMember(memberService.convertMemberToMemberDTO(post.getMember()));
+            postDTO.setPhoto(post.getPhoto());
+            postDTOs.add(postDTO);
+        }
+        return postDTOs;
+    }
+
     public Post getPostById(Long id) {
         return postRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found with id: " + id));
@@ -92,20 +115,11 @@ public class PostService {
         return postRepository.save(post);
     }
 
-
-    //    public Post updatePost(Long id, PostDTO postDto) {
-//        Post post = getPostById(id);
-//        post.setTitle(postDto.getTitle());
-//        post.setContent(postDto.getContent());
-//        post.setCategory(postDto.getCategory());
-//        post.setPhoto(postDto.getPhoto());
-//        post.setMember(memberService.convertMemberDTOToMember(postDto.getMember()));
-//        return postRepository.save(post);
-//    }
     public void deletePost(Long postId) {
         Post post = getPostById(postId);
         postRepository.delete(post);
     }
+
 
     public Post createMemberRecruitment(PostDTO postDTO, MultipartFile photo, MultipartFile file) {
 
@@ -129,41 +143,6 @@ public class PostService {
         return postRepository.save(post);
     }
 
-//    public Post createMemberRecruitment(PostDTO postDTO, MultipartFile photo, MultipartFile file) {
-//        Post.PostBuilder postBuilder = Post.builder()
-//                .title(postDTO.getTitle())
-//                .member(memberService.convertMemberDTOToMember(postDTO.getMember()))
-//                .content(postDTO.getContent())
-//                .category(postDTO.getCategory());
-//        try {
-//            postBuilder.photo(photo.getBytes());
-//            postBuilder.file(file.getBytes());
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        Post post = postBuilder.build();
-//        return postRepository.save(post);
-//    }
-
-
-
-    //    public Post createMemberRecruitment(PostDTO postDTO, MultipartFile files) {
-//        Post.PostBuilder postBuilder = Post.builder()
-//                .title(postDTO.getTitle())
-//                .member(memberService.convertMemberDTOToMember(postDTO.getMember()))
-//                .content(postDTO.getContent())
-//                .category(postDTO.getCategory());
-//
-//        try {
-//            postBuilder.photo(files.getBytes());
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        Post post = postBuilder.build();
-//        return postRepository.save(post);
-//    }
     public List<PostDTO> getAllPostsRecruitment() {
         List<Post> posts = postRepository.findByCategory(Category.RECRUIT);
         List<PostDTO> postDTOs = new ArrayList<>();
@@ -184,6 +163,28 @@ public class PostService {
         }
         return postDTOs;
     }
+
+    public List<PostDTO> getRecentRecruitPosts() {
+        Pageable topFive = PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "createAt"));
+        Page<Post> page = postRepository.findByCategoryOrderByCreateAtDesc(Category.RECRUIT, topFive);
+        List<Post> posts = page.getContent();
+
+        List<PostDTO> postDTOs = new ArrayList<>();
+        for (Post post : posts) {
+            PostDTO postDTO = new PostDTO();
+            postDTO.setPostId(post.getPostId());
+            postDTO.setTitle(post.getTitle());
+            postDTO.setContent(post.getContent());
+            postDTO.setCategory(post.getCategory());
+            postDTO.setNoticeVisibilityType(post.getNoticeVisibilityType());
+            postDTO.setCreatedAt(post.getCreateAt());
+            postDTO.setMember(memberService.convertMemberToMemberDTO(post.getMember()));
+            postDTO.setPhoto(post.getPhoto());
+            postDTOs.add(postDTO);
+        }
+        return postDTOs;
+    }
+
     public Post updateRecruitment(Long postId, PostDTO postDTO, MultipartFile files) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
 
