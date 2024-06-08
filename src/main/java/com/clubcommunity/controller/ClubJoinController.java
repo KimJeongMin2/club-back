@@ -30,7 +30,7 @@ public class ClubJoinController {
             @RequestPart(value = "dto", required = false) ClubJoinDTO clubJoinDTO,
             @RequestPart(value = "files", required = false) MultipartFile files
     ) {
-
+        System.out.println("files.getOriginalFilename() = " + files.getOriginalFilename());
         System.out.println("Title: " + clubJoinDTO.getTitle());
         System.out.println("Member: " + clubJoinDTO.getMember());
         System.out.println("files: " + files);

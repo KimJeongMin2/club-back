@@ -21,5 +21,7 @@ public class ClubJoinDTO {
     private MemberDTO member;
     private ClubDTO club;
     private byte[] file;
+
+    private String uploadFileName;
     private String refusalReason;
 }
