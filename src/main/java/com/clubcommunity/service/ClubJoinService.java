@@ -40,6 +40,7 @@ public class ClubJoinService {
 
         try {
             clubJoinBuilder.file(files.getBytes());
+            clubJoinBuilder.uploadFileName(files.getOriginalFilename());
         } catch (IOException e) {
             log.error("Error uploading file: {}", e.getMessage());
         }
@@ -81,6 +82,7 @@ public class ClubJoinService {
                     clubJoinDTO.setClub(clubService.convertClubToClubDTO(clubJoin.getClub()));
                     clubJoinDTO.setStatus(clubJoinMember.getStatus());
                     clubJoinDTO.setFile(clubJoin.getFile());
+                    clubJoinDTO.setUploadFileName(clubJoin.getUploadFileName());
                     clubJoinDTOS.add(clubJoinDTO);
                 }
             }

@@ -31,7 +31,7 @@ public class ClubJoin {
     @Column(columnDefinition = "MEDIUMBLOB")
     private byte[] file;
 
-
+    private String uploadFileName;
     @CreationTimestamp
     private LocalDateTime createAt = LocalDateTime.now();
 
