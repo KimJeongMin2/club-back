@@ -115,6 +115,7 @@ public class ClubService {
                     .introduction(club.getIntroduction())
                     .history(club.getHistory())
                     .meetingTime(club.getMeetingTime())
+                    .registration(club.getRegistration())
                     .photo(club.getPhoto())
                     .staffList(club.getStaffList())
                     .build();
@@ -124,13 +125,13 @@ public class ClubService {
         return clubDTOs;
     }
 
-    public Club makeClubBaseInfo(Long clubId, ClubDetailDTO clubDetailDTO, MultipartFile photo, MultipartFile file
+    public Club makeClubBaseInfo(Long clubId, ClubDetailDTO clubDetailDTO, MultipartFile registration, MultipartFile photo, MultipartFile staffList
     ) throws IOException {
         Club club = clubRepository.findById(clubId)
                 .orElseThrow(()-> new RuntimeException("해당하는 동아리를 찾을 수 없습니다."));
 
         club.updateBaseInfo(clubDetailDTO.getClubName(), clubDetailDTO.getIntroduction(), clubDetailDTO.getHistory()
-                , clubDetailDTO.getMeetingTime(), photo, file);
+                , clubDetailDTO.getMeetingTime(), registration, photo, staffList);
 
         return clubRepository.save(club);
     }
