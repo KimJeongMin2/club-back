@@ -13,6 +13,7 @@ public class ClubDetailDTO {
     private String introduction;
     private String history;
     private String meetingTime;
+    private byte[] registration;
     private byte[] photo;
     private byte[] staffList;
 }
