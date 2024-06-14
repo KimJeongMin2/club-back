@@ -1,12 +1,8 @@
 package com.clubcommunity.service;
 
 import com.clubcommunity.domain.*;
-import com.clubcommunity.dto.ClubApplicationDTO;
-import com.clubcommunity.dto.ClubDTO;
-import com.clubcommunity.dto.ClubDetailDTO;
-import com.clubcommunity.repository.ClubMemberRepository;
-import com.clubcommunity.repository.ClubRepository;
-import com.clubcommunity.repository.MemberRepository;
+import com.clubcommunity.dto.*;
+import com.clubcommunity.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +21,8 @@ public class ClubService {
     private final MemberService memberService;
     private final MemberRepository memberRepository;
 
-
+    private final ClubJoinRepository clubJoinRepository;
+    private final ClubJoinMemberRepository clubJoinMemberRepository;
     public Club makeClub(ClubDTO clubDTO) {
 
         Club club = Club.builder()
@@ -53,6 +51,7 @@ public class ClubService {
 
         return savedClub;
     }
+
     public List<ClubDTO> getAllClub() {
         List<ClubDTO> clubDTOs = new ArrayList<>();
 
@@ -70,12 +69,95 @@ public class ClubService {
             clubDTO.setProfessorName(club.getProfessorName());
             clubDTO.setProfessorMajor(club.getProfessorMajor());
             clubDTO.setProfessorPhone(club.getProfessorPhone());
+            clubDTO.setFile(club.getRegistration());
 
+            // 클럽에 소속된 멤버 추가
+            List<ClubJoinMemberDTO> memberDTOs = new ArrayList<>();
+            List<ClubJoin> clubJoins = clubJoinRepository.findByClub(club);
+
+            for (ClubJoin clubJoin : clubJoins) {
+                List<ClubJoinMember> clubJoinMembers = clubJoinMemberRepository.findByClubJoinAndMemberStatus(clubJoin, MemberStatus.ACTIVITY);
+
+                for (ClubJoinMember clubJoinMember : clubJoinMembers) {
+                    if (clubJoinMember.getStatus() == Status.APPROVAL) { // Status.APPROVAL 조건 추가
+                        ClubJoinMemberDTO memberDTO = new ClubJoinMemberDTO();
+                        memberDTO.setMember(memberService.convertMemberToMemberDTO(clubJoinMember.getMember()));
+                        memberDTO.setMemberStatus(clubJoinMember.getMemberStatus());
+                        memberDTOs.add(memberDTO);
+                    }
+                }
+            }
+            clubDTO.setMembers(memberDTOs);
             clubDTOs.add(clubDTO);
         }
 
         return clubDTOs;
     }
+
+
+//    public List<ClubDTO> getAllClub() {
+//        List<ClubDTO> clubDTOs = new ArrayList<>();
+//
+//        List<Club> clubs = clubRepository.findAll();
+//
+//        for (Club club : clubs) {
+//            ClubDTO clubDTO = new ClubDTO();
+//            clubDTO.setClubId(club.getClubId());
+//            clubDTO.setType(club.getType());
+//            clubDTO.setClubName(club.getClubName());
+//            clubDTO.setApplicantName(club.getApplicantName());
+//            clubDTO.setApplicantDepartment(club.getApplicantDepartment());
+//            clubDTO.setApplicantId(club.getApplicantId());
+//            clubDTO.setApplicantPhone(club.getApplicantPhone());
+//            clubDTO.setProfessorName(club.getProfessorName());
+//            clubDTO.setProfessorMajor(club.getProfessorMajor());
+//            clubDTO.setProfessorPhone(club.getProfessorPhone());
+//            clubDTO.setFile(club.getRegistration());
+//
+//            // 클럽에 소속된 멤버 추가
+//            List<ClubJoinMemberDTO> memberDTOs = new ArrayList<>();
+//            List<ClubJoin> clubJoins = clubJoinRepository.findByClub(club);
+//
+//            for (ClubJoin clubJoin : clubJoins) {
+//                List<ClubJoinMember> clubJoinMembers = clubJoinMemberRepository.findByClubJoinAndMemberStatus(clubJoin, MemberStatus.ACTIVITY);
+//
+//                for (ClubJoinMember clubJoinMember : clubJoinMembers) {
+//                    ClubJoinMemberDTO memberDTO = new ClubJoinMemberDTO();
+//                    memberDTO.setMember(memberService.convertMemberToMemberDTO(clubJoinMember.getMember()));
+//                    memberDTO.setMemberStatus(clubJoinMember.getMemberStatus());
+//                    memberDTOs.add(memberDTO);
+//                }
+//            }
+//            clubDTO.setMembers(memberDTOs);
+//            clubDTOs.add(clubDTO);
+//        }
+//
+//        return clubDTOs;
+//    }
+
+//    public List<ClubDTO> getAllClub() {
+//        List<ClubDTO> clubDTOs = new ArrayList<>();
+//
+//        List<Club> clubs = clubRepository.findAll();
+//
+//        for (Club club : clubs) {
+//            ClubDTO clubDTO = new ClubDTO();
+//            clubDTO.setClubId(club.getClubId());
+//            clubDTO.setType(club.getType());
+//            clubDTO.setClubName(club.getClubName());
+//            clubDTO.setApplicantName(club.getApplicantName());
+//            clubDTO.setApplicantDepartment(club.getApplicantDepartment());
+//            clubDTO.setApplicantId(club.getApplicantId());
+//            clubDTO.setApplicantPhone(club.getApplicantPhone());
+//            clubDTO.setProfessorName(club.getProfessorName());
+//            clubDTO.setProfessorMajor(club.getProfessorMajor());
+//            clubDTO.setProfessorPhone(club.getProfessorPhone());
+//            clubDTO.setFile(club.getRegistration());
+//            clubDTOs.add(clubDTO);
+//        }
+//
+//        return clubDTOs;
+//    }
 
     public Club convertClubDTOToClub(ClubDTO clubDTO) {
         Club club = new Club();

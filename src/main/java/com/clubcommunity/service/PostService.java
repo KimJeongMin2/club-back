@@ -153,9 +153,8 @@ public class PostService {
             postDTO.setContent(post.getContent());
             postDTO.setCategory(post.getCategory());
             postDTO.setCreatedAt(post.getCreateAt());
-            //System.out.println("post.getStoredFileName() = " + post.getStoredFileName());
             postDTO.setUploadFileName(post.getUploadFileName());
-            postDTO.setMember(memberService.convertMemberToMemberDTO(post.getMember())); // Member 엔티티를 MemberDTO로 변환
+            postDTO.setMember(memberService.convertMemberToMemberDTO(post.getMember()));
             postDTO.setPhoto(post.getPhoto());
             postDTO.setFile(post.getFile());
             postDTO.setClub(clubService.convertClubToClubDTO(post.getClub()));
@@ -163,6 +162,27 @@ public class PostService {
         }
         return postDTOs;
     }
+
+//    public List<PostDTO> getAllPostsRecruitment() {
+//        List<Post> posts = postRepository.findByCategory(Category.RECRUIT);
+//        List<PostDTO> postDTOs = new ArrayList<>();
+//        for (Post post : posts) {
+//            PostDTO postDTO = new PostDTO();
+//            postDTO.setPostId(post.getPostId());
+//            postDTO.setTitle(post.getTitle());
+//            postDTO.setContent(post.getContent());
+//            postDTO.setCategory(post.getCategory());
+//            postDTO.setCreatedAt(post.getCreateAt());
+//            //System.out.println("post.getStoredFileName() = " + post.getStoredFileName());
+//            postDTO.setUploadFileName(post.getUploadFileName());
+//            postDTO.setMember(memberService.convertMemberToMemberDTO(post.getMember())); // Member 엔티티를 MemberDTO로 변환
+//            postDTO.setPhoto(post.getPhoto());
+//            postDTO.setFile(post.getFile());
+//            postDTO.setClub(clubService.convertClubToClubDTO(post.getClub()));
+//            postDTOs.add(postDTO);
+//        }
+//        return postDTOs;
+//    }
 
     public List<PostDTO> getRecentRecruitPosts() {
         Pageable topFive = PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "createAt"));
