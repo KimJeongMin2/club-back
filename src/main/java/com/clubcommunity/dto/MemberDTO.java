@@ -18,4 +18,6 @@ public class MemberDTO {
     private String phoneNum;
     private String email;
     private RoleType roleType;
+
+
 }
