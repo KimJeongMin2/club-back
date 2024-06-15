@@ -1,10 +1,11 @@
 package com.clubcommunity.service;
 
-import com.clubcommunity.domain.Category;
-import com.clubcommunity.domain.Post;
-import com.clubcommunity.dto.PostDTO;
-import com.clubcommunity.dto.VideoDTO;
+import com.clubcommunity.domain.*;
+import com.clubcommunity.dto.*;
+import com.clubcommunity.repository.ClubJoinMemberRepository;
+import com.clubcommunity.repository.ClubJoinRepository;
 import com.clubcommunity.repository.PostRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,20 +18,25 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
     private final MemberService memberService;
 
     private final ClubService clubService;
-    public PostService(PostRepository postRepository, MemberService memberService, ClubService clubService){
-        this.postRepository = postRepository;
-        this.memberService = memberService;
-        this.clubService = clubService;
-    }
+
+    private final ClubJoinRepository clubJoinRepository;
+    private final ClubJoinMemberRepository clubJoinMemberRepository;
+//    public PostService(PostRepository postRepository, MemberService memberService, ClubService clubService){
+//        this.postRepository = postRepository;
+//        this.memberService = memberService;
+//        this.clubService = clubService;
+//    }
 
     public Post createPost(PostDTO postDTO, MultipartFile files) {
         Post.PostBuilder postBuilder = Post.builder()
@@ -63,11 +69,75 @@ public class PostService {
             postDTO.setCreatedAt(post.getCreateAt());
             postDTO.setMember(memberService.convertMemberToMemberDTO(post.getMember())); // Member 엔티티를 MemberDTO로 변환
             postDTO.setPhoto(post.getPhoto());
-            postDTO.setClub(clubService.convertClubToClubDTO(post.getClub()));
+
+            Club club = post.getClub();
+            ClubSummaryDTO clubSummaryDTO = new ClubSummaryDTO();
+            clubSummaryDTO.setClubId(club.getClubId());
+
+            // 클럽에 소속된 멤버 추가
+            List<ClubJoinMemberDTO> memberDTOs = new ArrayList<>();
+            List<ClubJoin> clubJoins = clubJoinRepository.findByClub(club);
+
+            for (ClubJoin clubJoin : clubJoins) {
+                List<ClubJoinMember> clubJoinMembers = clubJoinMemberRepository.findByClubJoinAndMemberStatus(clubJoin, MemberStatus.ACTIVITY);
+
+                for (ClubJoinMember clubJoinMember : clubJoinMembers) {
+                    if (clubJoinMember.getStatus() == Status.APPROVAL) {
+                        ClubJoinMemberDTO memberDTO = new ClubJoinMemberDTO();
+                        memberDTO.setMember(memberService.convertMemberToMemberDTO(clubJoinMember.getMember()));
+                        memberDTO.setMemberStatus(clubJoinMember.getMemberStatus());
+                        memberDTOs.add(memberDTO);
+                    }
+                }
+            }
+            clubSummaryDTO.setMembers(memberDTOs); // 클럽에 소속된 멤버들 추가
+            postDTO.setClubSummaryDTO(clubSummaryDTO); // 필요한 필드만 설정한 ClubSummaryDTO 설정
             postDTOs.add(postDTO);
         }
         return postDTOs;
     }
+
+
+//    public List<PostDTO> getAllPosts() {
+//        List<Post> posts = postRepository.findByCategory(Category.NOTICE);
+//        List<PostDTO> postDTOs = new ArrayList<>();
+//        for (Post post : posts) {
+//            PostDTO postDTO = new PostDTO();
+//            postDTO.setPostId(post.getPostId());
+//            postDTO.setTitle(post.getTitle());
+//            postDTO.setContent(post.getContent());
+//            postDTO.setCategory(post.getCategory());
+//            postDTO.setNoticeVisibilityType(post.getNoticeVisibilityType());
+//            postDTO.setCreatedAt(post.getCreateAt());
+//            postDTO.setMember(memberService.convertMemberToMemberDTO(post.getMember())); // Member 엔티티를 MemberDTO로 변환
+//            postDTO.setPhoto(post.getPhoto());
+//            postDTO.setClub(clubService.convertClubToClubDTO(post.getClub()));
+//
+//            Club club = post.getClub();
+//            ClubDTO clubDTO = clubService.convertClubToClubDTO(club);
+//
+//            // 클럽에 소속된 멤버 추가
+//            List<ClubJoinMemberDTO> memberDTOs = new ArrayList<>();
+//            List<ClubJoin> clubJoins = clubJoinRepository.findByClub(club);
+//
+//            for (ClubJoin clubJoin : clubJoins) {
+//                List<ClubJoinMember> clubJoinMembers = clubJoinMemberRepository.findByClubJoinAndMemberStatus(clubJoin, MemberStatus.ACTIVITY);
+//
+//                for (ClubJoinMember clubJoinMember : clubJoinMembers) {
+//                    if (clubJoinMember.getStatus() == Status.APPROVAL) {
+//                        ClubJoinMemberDTO memberDTO = new ClubJoinMemberDTO();
+//                        memberDTO.setMember(memberService.convertMemberToMemberDTO(clubJoinMember.getMember()));
+//                        memberDTO.setMemberStatus(clubJoinMember.getMemberStatus());
+//                        memberDTOs.add(memberDTO);
+//                    }
+//                }
+//            }
+//            clubDTO.setMembers(memberDTOs); // 클럽에 소속된 멤버들 추가
+//            postDTO.setClub(clubDTO); //
+//            postDTOs.add(postDTO);
+//        }
+//        return postDTOs;
+//    }
 
     public List<PostDTO> getRecentNoticePosts() {
         Pageable topFive = PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "createAt"));
