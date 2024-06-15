@@ -79,7 +79,7 @@ public class ClubService {
                 List<ClubJoinMember> clubJoinMembers = clubJoinMemberRepository.findByClubJoinAndMemberStatus(clubJoin, MemberStatus.ACTIVITY);
 
                 for (ClubJoinMember clubJoinMember : clubJoinMembers) {
-                    if (clubJoinMember.getStatus() == Status.APPROVAL) { // Status.APPROVAL 조건 추가
+                    if (clubJoinMember.getStatus() == Status.APPROVAL) {
                         ClubJoinMemberDTO memberDTO = new ClubJoinMemberDTO();
                         memberDTO.setMember(memberService.convertMemberToMemberDTO(clubJoinMember.getMember()));
                         memberDTO.setMemberStatus(clubJoinMember.getMemberStatus());
