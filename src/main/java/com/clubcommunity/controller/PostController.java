@@ -15,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/posts")
+
 public class PostController {
     private final PostService postService;
     private final ImageService imageService;
@@ -31,13 +32,6 @@ public class PostController {
             @RequestPart(value = "dto", required = false) PostDTO postDTO,
             @RequestPart(value = "photo", required = false) MultipartFile files
     ) {
-
-        System.out.println("Title: " + postDTO.getTitle());
-        System.out.println("Content: " + postDTO.getContent());
-        System.out.println("Category: " + postDTO.getCategory());
-        System.out.println("Member: " + postDTO.getMember());
-        System.out.println("NoticeVisibility: " + postDTO.getNoticeVisibilityType());
-        System.out.println("files: " + files);
         Post savedPost = postService.createPost(postDTO, files);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedPost);
     }

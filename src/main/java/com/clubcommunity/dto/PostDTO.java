@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @NoArgsConstructor
 @Getter
@@ -23,9 +24,12 @@ public class PostDTO {
     private MemberDTO member;
 
     private ClubDTO club;
+
+    private ClubSummaryDTO clubSummaryDTO;
     private byte[] photo;
 
     private String uploadFileName;
     private byte[] file;
+
 
 }

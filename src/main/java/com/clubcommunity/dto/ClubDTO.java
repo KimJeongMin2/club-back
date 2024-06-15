@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.antlr.v4.runtime.misc.NotNull;
 
+import java.util.List;
+
 @NoArgsConstructor
 @Setter
 @Getter
@@ -21,4 +23,6 @@ public class ClubDTO {
     private String professorMajor;
     private String professorPhone;
     private MemberDTO member;
+    private byte[] file;
+    private List<ClubJoinMemberDTO> members;
 }

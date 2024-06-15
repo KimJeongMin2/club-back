@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@Entity(name="club-join")
+@Entity(name="club_join")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -16,10 +16,6 @@ public class ClubJoin {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long clubJoinId;
-
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "student_id")
-//    private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "club_id")

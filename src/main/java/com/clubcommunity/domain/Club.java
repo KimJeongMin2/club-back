@@ -50,17 +50,19 @@ public class Club {
     private List<ClubMember> clubMembers = new ArrayList<>();
 
     public void updateBaseInfo(String clubName, String introduction, String history, String meetingTime,
-                             MultipartFile photo, MultipartFile file) throws IOException {
+                             MultipartFile registration, MultipartFile photo, MultipartFile staffList) throws IOException {
         this.clubName = (clubName != null)? clubName : this.clubName;
         this.introduction = (introduction != null)? introduction : this.introduction;
         this.history = (history != null)? history : this.history;
         this.meetingTime = (meetingTime != null)? meetingTime : this.meetingTime;
+        if (registration != null && !registration.isEmpty()) {
+            this.registration = registration.getBytes();
+        }
         if (photo != null && !photo.isEmpty()) {
             this.photo = photo.getBytes();
         }
-
-        if (file != null && !file.isEmpty()) {
-            this.staffList = file.getBytes();
+        if (staffList != null && !staffList.isEmpty()) {
+            this.staffList = staffList.getBytes();
         }
     }
 

@@ -1,5 +1,15 @@
 package com.clubcommunity.domain;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@Getter
+@RequiredArgsConstructor
 public enum Category {
-    PHOTO, VIDEO, RECRUIT, NOTICE // 사진, 영상, 부원모집, 공지
+    PHOTO("사진"), 
+    VIDEO("영상"), 
+    RECRUIT("부원모집"), 
+    NOTICE("공지");
+
+    private final String text;
 }
