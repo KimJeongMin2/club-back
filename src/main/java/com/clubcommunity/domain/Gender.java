@@ -1,5 +1,5 @@
 package com.clubcommunity.domain;
 
 public enum Gender {
-    MALE, FEMALE // 남성, 여성
+    male, female // 남성, 여성
 }

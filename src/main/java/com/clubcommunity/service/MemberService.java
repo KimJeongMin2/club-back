@@ -1,20 +1,27 @@
 package com.clubcommunity.service;
 
+import com.clubcommunity.domain.Gender;
 import com.clubcommunity.domain.Member;
+import com.clubcommunity.domain.RoleType;
 import com.clubcommunity.dto.MemberDTO;
 import com.clubcommunity.repository.MemberRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class MemberService {
 
     private final MemberRepository memberRepository;
-
+    private final Map<String, Map<String, Object>> userDataMap = new HashMap<>();
 
     public MemberService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
-
+    public Map<String, Object> getUserData(String kakaoId) {
+        return userDataMap.get(kakaoId);
+    }
     public Member convertMemberDTOToMember(MemberDTO memberDTO) {
         Member member = new Member();
         member.setStudentId(memberDTO.getStudentId());
@@ -43,5 +50,25 @@ public class MemberService {
     public Member findMemberById(Long userId) {
         return memberRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다. ID: " + userId));
+    }
+
+    public void registerMember(MemberDTO memberDTO) throws Exception {
+        if (memberRepository.existsByUid(memberDTO.getUid())) {
+            throw new Exception("이미 존재하는 ID입니다.");
+        }
+
+        Member member = new Member();
+        member.setUid(memberDTO.getUid());
+        member.setPw(memberDTO.getPw());
+        member.setName(memberDTO.getName());
+        member.setEmail(memberDTO.getEmail());
+        member.setPhoneNum(memberDTO.getPhoneNum());
+        member.setGender(Gender.valueOf(String.valueOf(memberDTO.getGender())));
+        member.setBirth(Long.valueOf(memberDTO.getBirth()));
+        member.setDepartment(memberDTO.getDepartment());
+        member.setStudentId(Long.valueOf(memberDTO.getStudentId()));
+        member.setRoleType(RoleType.valueOf(String.valueOf(memberDTO.getRoleType())));
+
+        memberRepository.save(member);
     }
 }

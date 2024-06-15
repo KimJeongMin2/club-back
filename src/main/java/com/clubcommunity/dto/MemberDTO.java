@@ -2,14 +2,16 @@ package com.clubcommunity.dto;
 
 import com.clubcommunity.domain.Gender;
 import com.clubcommunity.domain.RoleType;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @NoArgsConstructor
 @Getter
 @Setter
+@AllArgsConstructor
+@Builder
 public class MemberDTO {
+    private String uid;
+    private String pw;
     private Long studentId;
     private String name;
     private Long birth;
