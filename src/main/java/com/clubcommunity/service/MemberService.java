@@ -19,9 +19,7 @@ public class MemberService {
     public MemberService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
-    public Map<String, Object> getUserData(String kakaoId) {
-        return userDataMap.get(kakaoId);
-    }
+
     public Member convertMemberDTOToMember(MemberDTO memberDTO) {
         Member member = new Member();
         member.setStudentId(memberDTO.getStudentId());

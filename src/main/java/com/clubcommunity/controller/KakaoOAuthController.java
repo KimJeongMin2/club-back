@@ -196,7 +196,7 @@ public class KakaoOAuthController {
                 .name(userDataMap.get("name"))
                 .email(userDataMap.get("email"))
                 .phoneNum(userDataMap.get("phoneNum"))
-                .gender(Gender.valueOf((String) userDataMap.get("gender")))
+                .gender(Gender.valueOf(userDataMap.get("gender")))
                 .birth(Long.valueOf(userDataMap.get("birth")))
                 .department(userDataMap.get("department"))
                 .studentId(Long.valueOf(userDataMap.get("studentId")))
