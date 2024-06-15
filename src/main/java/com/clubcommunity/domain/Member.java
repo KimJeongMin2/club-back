@@ -1,9 +1,7 @@
 package com.clubcommunity.domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,10 +10,15 @@ import java.util.List;
 @Setter
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Member {
+    @Column(name = "id")
+    private String uid;
+    private String pw;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "student_id")
     private Long studentId;
 
     private String name;
@@ -25,8 +28,14 @@ public class Member {
     private Gender gender;
 
     private String department;
+
+    @Column(name = "phone_num")
     private String phoneNum;
     private String email;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role_type")
+    private RoleType roleType;
 
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
