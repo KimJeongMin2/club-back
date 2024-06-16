@@ -61,7 +61,7 @@ public class MemberService {
         member.setName(memberDTO.getName());
         member.setEmail(memberDTO.getEmail());
         member.setPhoneNum(memberDTO.getPhoneNum());
-        member.setGender(Gender.valueOf(String.valueOf(memberDTO.getGender())));
+        member.setGender(Gender.valueOf(String.valueOf(memberDTO.getGender()).toUpperCase()));
         member.setBirth(Long.valueOf(memberDTO.getBirth()));
         member.setDepartment(memberDTO.getDepartment());
         member.setStudentId(Long.valueOf(memberDTO.getStudentId()));

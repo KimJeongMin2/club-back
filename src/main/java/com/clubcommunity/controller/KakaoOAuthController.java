@@ -87,7 +87,7 @@ public class KakaoOAuthController {
         if (userInfo == null) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("사용자 정보 요청 실패");
         }
-
+        System.out.println("userInfo = " + userInfo);
         String kakaoId = userInfo.get("id").asText();
         Member member = memberRepository.findByUid(kakaoId).orElse(null);
         if (member == null) {
@@ -152,7 +152,7 @@ public class KakaoOAuthController {
 
         userDataMap.put("uid", kakaoId);
         userDataMap.put("email", email);
-        userDataMap.put("gender", gender);
+        userDataMap.put("gender", gender.toUpperCase());
         userDataMap.put("name", name);
         userDataMap.put("phoneNum", phoneNum);
 
