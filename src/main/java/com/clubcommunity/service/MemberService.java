@@ -14,7 +14,6 @@ import java.util.Map;
 public class MemberService {
 
     private final MemberRepository memberRepository;
-    private final Map<String, Map<String, Object>> userDataMap = new HashMap<>();
 
     public MemberService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
