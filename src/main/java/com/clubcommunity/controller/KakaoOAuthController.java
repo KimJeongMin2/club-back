@@ -44,7 +44,6 @@ public class KakaoOAuthController {
     @GetMapping("/session")
     public ResponseEntity<Object> checkSessionValidity(HttpSession session) {
         if (session.isNew() || session.getAttribute("userInfo") == null) {
-            // 세션이 새로 생성되었거나, userInfo 데이터가 없는 경우 (유효하지 않은 세션)
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         } else {
             return ResponseEntity.ok().build();
@@ -60,6 +59,7 @@ public class KakaoOAuthController {
 
         return ResponseEntity.ok(userInfo);
     }
+
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession(false);
@@ -76,7 +76,7 @@ public class KakaoOAuthController {
     }
 
     @GetMapping("/oauth/callback/kakao")
-    public ResponseEntity<Object> handleKakaoCallback(@RequestParam("code") String code, HttpSession session) {
+    public ResponseEntity<Object> handleKakaoCallback(@RequestParam("code") String code, HttpServletRequest request, HttpServletResponse response) {
         System.out.println("Received code: " + code);
         String accessToken = getAccessToken(code);
         if (accessToken == null) {
@@ -93,7 +93,7 @@ public class KakaoOAuthController {
         if (member == null) {
             return handleSignup(userInfo, kakaoId);
         } else {
-            return handleLogin(member, session);
+            return handleLogin(member, request, response);
         }
     }
 
@@ -162,23 +162,45 @@ public class KakaoOAuthController {
                 .build();
     }
 
-    private ResponseEntity<Object> handleLogin(Member member, HttpSession session) {
-        Map<String, Object> userInfo = new HashMap<>();
-        if (member.getUid() != null) {
-            userInfo.put("id", member.getUid());
-        }
-        if (member.getRoleType() != null) {
-            userInfo.put("roleType", member.getRoleType());
-        }
-        System.out.println("userInfo = " + userInfo);
-        session.setAttribute("userInfo", userInfo);
-        session.setMaxInactiveInterval(1800);
-
-        HttpHeaders redirectHeaders = new HttpHeaders();
-        redirectHeaders.setLocation(URI.create("http://localhost:3000"));
-        return new ResponseEntity<>(redirectHeaders, HttpStatus.FOUND);
+private ResponseEntity<Object> handleLogin(Member member, HttpServletRequest request, HttpServletResponse response) {
+    Map<String, Object> userInfo = new HashMap<>();
+    if (member.getUid() != null) {
+        userInfo.put("id", member.getUid());
+    }
+    if (member.getRoleType() != null) {
+        userInfo.put("roleType", member.getRoleType());
     }
 
+    // 로그인 상태 정보 추가
+    userInfo.put("isLoggedIn", true);
+
+    // 쿠키에 사용자 정보 저장
+    Cookie cookieId = new Cookie("userId", member.getUid());
+    cookieId.setMaxAge(3600); // 쿠키 유효 시간 (초 단위, 여기서는 1시간)
+    cookieId.setPath("/"); // 쿠키가 유효한 경로
+    response.addCookie(cookieId);
+
+    Cookie cookieRoleType = new Cookie("roleType", member.getRoleType().toString());
+    cookieRoleType.setMaxAge(3600);
+    cookieRoleType.setPath("/");
+    response.addCookie(cookieRoleType);
+
+    Cookie cookieIsLoggedIn = new Cookie("isLoggedIn", "true");
+    cookieIsLoggedIn.setMaxAge(3600);
+    cookieIsLoggedIn.setPath("/");
+    response.addCookie(cookieIsLoggedIn);
+
+    // 세션에 사용자 정보 저장
+    HttpSession session = request.getSession();
+    session.setAttribute("userInfo", userInfo);
+    session.setMaxInactiveInterval(1800);
+
+    // 리다이렉트
+    HttpHeaders headers = new HttpHeaders();
+    headers.setLocation(URI.create("http://localhost:3000"));
+
+    return new ResponseEntity<>(headers, HttpStatus.FOUND);
+}
 
     @PostMapping("/signup")
     public ResponseEntity<String> completeSignUp(@RequestBody Map<String, Object> additionalData) {
