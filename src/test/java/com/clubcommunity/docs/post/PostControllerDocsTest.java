@@ -105,6 +105,8 @@ public class PostControllerDocsTest extends RestDocsSupport {
         postDTO.setNoticeVisibilityType(NoticeVisibilityType.ENTIRE);
         postDTO.setCreatedAt(LocalDateTime.now());
         MemberDTO memberDTO = new MemberDTO();
+        memberDTO.setUid("1");
+        memberDTO.setPw("1");
         memberDTO.setStudentId(123L);
         memberDTO.setName("John Doe");
         memberDTO.setBirth(20000101L);
@@ -132,6 +134,8 @@ public class PostControllerDocsTest extends RestDocsSupport {
                                 fieldWithPath("[].category").description("게시물 카테고리"),
                                 fieldWithPath("[].noticeVisibilityType").description("공지사항 공개 유형"),
                                 fieldWithPath("[].createdAt").description("게시물 생성 시간"),
+                                fieldWithPath("[].member.uid").description("작성자 아이디"),
+                                fieldWithPath("[].member.pw").description("작성자 비밀번호"),
                                 fieldWithPath("[].member.studentId").description("작성자 학번"),
                                 fieldWithPath("[].member.name").description("작성자 이름"),
                                 fieldWithPath("[].member.birth").description("작성자 생년월일"),
@@ -160,6 +164,8 @@ public class PostControllerDocsTest extends RestDocsSupport {
         postDTO.setCreatedAt(LocalDateTime.now());
 
         MemberDTO memberDTO = new MemberDTO();
+        memberDTO.setUid("1");
+        memberDTO.setPw("1");
         memberDTO.setStudentId(123L);
         memberDTO.setName("John Doe");
         memberDTO.setBirth(20000101L);
@@ -195,6 +201,8 @@ public class PostControllerDocsTest extends RestDocsSupport {
                                 fieldWithPath("[].category").description("게시물 카테고리"),
                                 fieldWithPath("[].noticeVisibilityType").description("공지사항 가시성 유형"),
                                 fieldWithPath("[].createdAt").description("게시물 생성 날짜"),
+                                fieldWithPath("[].member.uid").description("작성자 ID"),
+                                fieldWithPath("[].member.pw").description("작성자 PW"),
                                 fieldWithPath("[].member.studentId").description("작성자 학생 ID"),
                                 fieldWithPath("[].member.name").description("작성자 이름"),
                                 fieldWithPath("[].member.birth").description("작성자 생년월일"),
