@@ -482,7 +482,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Content-Length: 1027
+Content-Length: 1104
 
 [ {
   "postId" : 1,
@@ -490,8 +490,10 @@ Content-Length: 1027
   "content" : "Test Content",
   "category" : "NOTICE",
   "noticeVisibilityType" : "ENTIRE",
-  "createdAt" : "2024-06-16T00:45:09.1024842",
+  "createdAt" : "2024-06-16T15:37:23.166441",
   "member" : {
+    "uid" : "1",
+    "pw" : "1",
     "studentId" : 123,
     "name" : "John Doe",
     "birth" : 20000101,
@@ -507,6 +509,8 @@ Content-Length: 1027
     "members" : [ {
       "clubJoinId" : null,
       "member" : {
+        "uid" : "1",
+        "pw" : "1",
         "studentId" : 123,
         "name" : "John Doe",
         "birth" : 20000101,
@@ -570,6 +574,16 @@ Content-Length: 1027
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].createdAt</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">게시물 생성 날짜</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].member.uid</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">작성자 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].member.pw</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">작성자 PW</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].member.studentId</code></p></td>
@@ -778,7 +792,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Content-Length: 566
+Content-Length: 601
 
 [ {
   "postId" : 1,
@@ -786,8 +800,10 @@ Content-Length: 566
   "content" : "Test Content",
   "category" : "NOTICE",
   "noticeVisibilityType" : "ENTIRE",
-  "createdAt" : "2024-06-16T00:45:09.9869094",
+  "createdAt" : "2024-06-16T15:37:25.0249894",
   "member" : {
+    "uid" : "1",
+    "pw" : "1",
     "studentId" : 123,
     "name" : "John Doe",
     "birth" : 20000101,
@@ -848,6 +864,16 @@ Content-Length: 566
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].createdAt</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">게시물 생성 시간</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].member.uid</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">작성자 아이디</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].member.pw</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">작성자 비밀번호</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].member.studentId</code></p></td>
@@ -924,7 +950,7 @@ Content-Length: 566
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2024-06-15 20:47:19 +0900
+Last updated 2024-06-16 14:40:53 +0900
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
