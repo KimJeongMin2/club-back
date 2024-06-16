@@ -10,4 +10,5 @@ public enum Gender {
     FEMALE("여성");
 
     private final String text;
+
 }
