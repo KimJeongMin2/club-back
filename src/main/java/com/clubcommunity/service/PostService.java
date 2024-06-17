@@ -317,7 +317,8 @@ public class PostService {
                 .title(videoDTO.getTitle())
                 .content(videoDTO.getContent())
                 .category(Category.VIDEO)
-                .member(memberService.convertMemberDTOToMember(videoDTO.getMember()))
+//                .member(memberService.convertMemberDTOToMember(videoDTO.getMember()))
+                .member(member)
                 .build();
 
         Post savedPost = postRepository.save(post);

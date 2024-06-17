@@ -147,6 +147,7 @@ public class PostController {
     //활동 영상 등록
     @PostMapping("/video")
     public ResponseEntity makeVideo(@RequestBody VideoDTO.Request videoDTO) throws RuntimeException {
+        System.out.println("여기?");
         Post post = postService.makeVideo(videoDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(post);
     }
