@@ -200,6 +200,14 @@ public class ClubService {
                     .registration(club.getRegistration())
                     .photo(club.getPhoto())
                     .staffList(club.getStaffList())
+                    .type(club.getType())
+                    .applicantName(club.getApplicantName())
+                    .applicantDepartment(club.getApplicantDepartment())
+                    .applicantId(club.getApplicantId())
+                    .applicantPhone(club.getApplicantPhone())
+                    .professorName(club.getProfessorName())
+                    .professorMajor(club.getProfessorMajor())
+                    .professorPhone(club.getProfessorPhone())
                     .build();
 
             clubDTOs.add(clubDTO);
