@@ -19,8 +19,13 @@ public class MemberService {
         this.memberRepository = memberRepository;
     }
 
+    public Member findByUid(String uid) {
+        return memberRepository.findByUid(uid).orElse(null);
+    }
     public Member convertMemberDTOToMember(MemberDTO memberDTO) {
+        System.out.println("memberDTO.toString() = " + memberDTO.toString());
         Member member = new Member();
+        member.setUid(memberDTO.getUid());
         member.setStudentId(memberDTO.getStudentId());
         member.setName(memberDTO.getName());
         member.setBirth(memberDTO.getBirth());
@@ -29,6 +34,7 @@ public class MemberService {
         member.setPhoneNum(memberDTO.getPhoneNum());
         member.setEmail(memberDTO.getEmail());
 //        member.setRoleType(memberDTO.getRoleType());
+        System.out.println("member.toString() = " + member.toString());
         return member;
     }
     public MemberDTO convertMemberToMemberDTO(Member member) {

@@ -13,11 +13,12 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class Member {
+    @Id
     @Column(name = "id")
     private String uid;
     private String pw;
 
-    @Id
+
     @Column(name = "student_id")
     private Long studentId;
 
@@ -40,4 +41,18 @@ public class Member {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ClubMember> clubMembers = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return "Member{" +
+                "uid='" + uid + '\'' +
+                ", studentId='" + studentId + '\'' +
+                ", name='" + name + '\'' +
+                ", birth=" + birth +
+                ", gender='" + gender + '\'' +
+                ", department='" + department + '\'' +
+                ", phoneNum='" + phoneNum + '\'' +
+                ", email='" + email + '\'' +
+                '}';
+    }
 }

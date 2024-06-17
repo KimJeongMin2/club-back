@@ -31,5 +31,15 @@ public class PostDTO {
     private String uploadFileName;
     private byte[] file;
 
+    @Override
+    public String toString() {
+        return "PostDTO{" +
+                "title='" + title + '\'' +
+                ", member=" + member +
+                ", content='" + content + '\'' +
+                ", category='" + category + '\'' +
+                ", club=" + club +
+                '}';
+    }
 
 }
