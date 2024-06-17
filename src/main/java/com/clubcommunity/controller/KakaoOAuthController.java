@@ -162,45 +162,54 @@ public class KakaoOAuthController {
                 .build();
     }
 
-private ResponseEntity<Object> handleLogin(Member member, HttpServletRequest request, HttpServletResponse response) {
-    Map<String, Object> userInfo = new HashMap<>();
-    if (member.getUid() != null) {
-        userInfo.put("id", member.getUid());
+    private ResponseEntity<Object> handleLogin(Member member, HttpServletRequest request, HttpServletResponse response) {
+        Map<String, Object> userInfo = new HashMap<>();
+        if (member.getUid() != null) {
+            userInfo.put("id", member.getUid());
+        }
+        if (member.getRoleType() != null) {
+            userInfo.put("roleType", member.getRoleType());
+        }
+        if (member.getName() != null) {
+            userInfo.put("name", member.getName());
+        }
+
+        userInfo.put("isLoggedIn", true);
+
+        Cookie cookieId = new Cookie("userId", member.getUid());
+        cookieId.setMaxAge(3600);
+        cookieId.setPath("/");
+        response.addCookie(cookieId);
+
+        Cookie cookieRoleType = new Cookie("roleType", member.getRoleType().toString());
+        cookieRoleType.setMaxAge(3600);
+        cookieRoleType.setPath("/");
+        response.addCookie(cookieRoleType);
+
+        Cookie cookieName = new Cookie("name", member.getName());
+        cookieName.setMaxAge(3600);
+        cookieName.setPath("/");
+        response.addCookie(cookieName);
+
+        Cookie cookieIsLoggedIn = new Cookie("isLoggedIn", "true");
+        cookieIsLoggedIn.setMaxAge(3600);
+        cookieIsLoggedIn.setPath("/");
+        response.addCookie(cookieIsLoggedIn);
+
+        HttpSession session = request.getSession();
+        session.setAttribute("userInfo", userInfo);
+        session.setMaxInactiveInterval(1800);
+
+        Cookie sessionIdCookie = new Cookie("JSESSIONID", session.getId());
+        sessionIdCookie.setMaxAge(3600);
+        sessionIdCookie.setPath("/");
+        response.addCookie(sessionIdCookie);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(URI.create("http://localhost:3000"));
+
+        return new ResponseEntity<>(headers, HttpStatus.FOUND);
     }
-    if (member.getRoleType() != null) {
-        userInfo.put("roleType", member.getRoleType());
-    }
-
-    // 로그인 상태 정보 추가
-    userInfo.put("isLoggedIn", true);
-
-    // 쿠키에 사용자 정보 저장
-    Cookie cookieId = new Cookie("userId", member.getUid());
-    cookieId.setMaxAge(3600); // 쿠키 유효 시간 (초 단위, 여기서는 1시간)
-    cookieId.setPath("/"); // 쿠키가 유효한 경로
-    response.addCookie(cookieId);
-
-    Cookie cookieRoleType = new Cookie("roleType", member.getRoleType().toString());
-    cookieRoleType.setMaxAge(3600);
-    cookieRoleType.setPath("/");
-    response.addCookie(cookieRoleType);
-
-    Cookie cookieIsLoggedIn = new Cookie("isLoggedIn", "true");
-    cookieIsLoggedIn.setMaxAge(3600);
-    cookieIsLoggedIn.setPath("/");
-    response.addCookie(cookieIsLoggedIn);
-
-    // 세션에 사용자 정보 저장
-    HttpSession session = request.getSession();
-    session.setAttribute("userInfo", userInfo);
-    session.setMaxInactiveInterval(1800);
-
-    // 리다이렉트
-    HttpHeaders headers = new HttpHeaders();
-    headers.setLocation(URI.create("http://localhost:3000"));
-
-    return new ResponseEntity<>(headers, HttpStatus.FOUND);
-}
 
     @PostMapping("/signup")
     public ResponseEntity<String> completeSignUp(@RequestBody Map<String, Object> additionalData) {
