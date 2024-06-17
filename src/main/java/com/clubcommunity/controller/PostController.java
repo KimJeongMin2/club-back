@@ -1,17 +1,26 @@
 package com.clubcommunity.controller;
 
+import com.clubcommunity.domain.Member;
 import com.clubcommunity.domain.Post;
 import com.clubcommunity.dto.PostDTO;
 import com.clubcommunity.dto.VideoDTO;
+import com.clubcommunity.repository.MemberRepository;
+import com.clubcommunity.repository.PostRepository;
 import com.clubcommunity.service.ImageService;
 import com.clubcommunity.service.MemberService;
 import com.clubcommunity.service.PostService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 import java.util.List;
+
+import static com.clubcommunity.domain.Category.PHOTO;
+import static com.clubcommunity.domain.NoticeVisibilityType.ENTIRE;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -20,6 +29,12 @@ public class PostController {
     private final PostService postService;
     private final ImageService imageService;
     private final MemberService memberService;
+
+    @Autowired
+    private MemberRepository memberRepository;
+
+    @Autowired
+    private PostRepository postRepository;
 
     public PostController(PostService postService, ImageService imageService, MemberService memberService) {
         this.postService = postService;
@@ -172,5 +187,29 @@ public class PostController {
         Post updatedPost = postService.updateVideo(videoId, videoDTO);
         return ResponseEntity.ok(updatedPost);
     }
+    @PostMapping(value = "/activities", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<Post> postActivity(
+            @RequestParam("title") String title,
+            @RequestParam("content") String content,
+            @RequestParam("userId") String userId,
+            @RequestParam("imageFile") MultipartFile imageFile) throws IOException {
 
+        // 작성자 Member 객체 찾기
+        Member member = memberRepository.findByUid(userId)
+                .orElseThrow(() -> new RuntimeException("Invalid user"));;
+
+        // Post 객체 생성 및 저장
+        Post post = Post.builder()
+                .member(member)
+                .title(title)
+                .content(content)
+                .photo(imageFile.getBytes())
+                .category(PHOTO)
+                .noticeVisibilityType(ENTIRE)
+                .build();
+        post.setUploadFileName(imageFile.getOriginalFilename()); // 업로드된 파일 이름 설정
+        Post savedPost = postRepository.save(post);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedPost);
+    }
 }
