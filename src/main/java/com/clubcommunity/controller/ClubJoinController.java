@@ -46,7 +46,7 @@ public class ClubJoinController {
     }
 
     @GetMapping("/approved-members")
-    public ResponseEntity<List<ClubJoinMemberDTO>> getApprovedMembersForClub(@RequestHeader(value="userId", required = true) Long userId) {
+    public ResponseEntity<List<ClubJoinMemberDTO>> getApprovedMembersForClub(@RequestHeader(value="userId", required = true) String userId) {
         System.out.println("userId = " + userId);
         List<ClubJoinMemberDTO> approvedMembers = clubJoinService.getApprovedMembersForClub(userId);
         return ResponseEntity.ok(approvedMembers);

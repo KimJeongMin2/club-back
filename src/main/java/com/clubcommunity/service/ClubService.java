@@ -168,6 +168,7 @@ public class ClubService {
 
     public ClubDTO convertClubToClubDTO(Club club) {
         ClubDTO clubDTO = new ClubDTO();
+        clubDTO.setClubName(club.getClubName());
         clubDTO.setClubId(club.getClubId());
         return clubDTO;
     }

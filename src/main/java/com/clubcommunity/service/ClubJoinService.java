@@ -145,7 +145,7 @@ public class ClubJoinService {
 //        return clubJoinDTOS;
 //    }
 
-    public List<ClubJoinMemberDTO> getApprovedMembersForClub(Long userId) {
+    public List<ClubJoinMemberDTO> getApprovedMembersForClub(String userId) {
         Member clubOwner = memberService.findMemberById(userId);
         List<Club> clubs = clubService.getClubsForMember(clubOwner);
 

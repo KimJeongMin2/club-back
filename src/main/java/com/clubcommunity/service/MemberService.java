@@ -40,6 +40,7 @@ public class MemberService {
     public MemberDTO convertMemberToMemberDTO(Member member) {
         System.out.println("member임 = " + member);
         MemberDTO memberDTO = new MemberDTO();
+        memberDTO.setUid(member.getUid());
         memberDTO.setStudentId(member.getStudentId());
         memberDTO.setName(member.getName());
         memberDTO.setBirth(member.getBirth());
@@ -50,7 +51,7 @@ public class MemberService {
 //        memberDTO.setRoleType(member.getRoleType());
         return memberDTO;
     }
-    public Member findMemberById(Long userId) {
+    public Member findMemberById(String userId) {
         return memberRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다. ID: " + userId));
     }
