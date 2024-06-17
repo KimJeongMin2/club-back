@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,7 +45,7 @@ public class ClubService {
                 .club(savedClub)
                 .memberStatus(MemberStatus.ACTIVITY)
                 .status(Status.GO_OVER)
-                .roleType(RoleType.MEMBER)
+                .roleType(RoleType.MASTER)
                 .build();
 
         clubMemberRepository.save(clubMember);
@@ -308,5 +309,28 @@ public class ClubService {
         memberRepository.save(member);
     }
 
+
+    public List<Club> rejectAllClubs(List<ClubRejectDTO> rejectionList) {
+        List<Club> rejectedClubs = new ArrayList<>();
+
+        for (ClubRejectDTO rejectDTO : rejectionList) {
+            Long clubId = rejectDTO.getClubId();
+            String refusalReason = rejectDTO.getRefusalReason();
+
+            Club club = clubRepository.findById(clubId)
+                    .orElseThrow(() -> new RuntimeException("해당하는 동아리가 존재하지 않습니다."));
+
+            ClubMember clubMember = clubMemberRepository.findByClubAndStatus(club, Status.GO_OVER);
+            if (clubMember != null) {
+                clubMember.reject(refusalReason);
+                clubMemberRepository.save(clubMember);
+                rejectedClubs.add(club);
+            } else {
+                throw new RuntimeException("해당 동아리의 회원이 존재하지 않습니다.");
+            }
+        }
+
+        return rejectedClubs;
+    }
 
 }
