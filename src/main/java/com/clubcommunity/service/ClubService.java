@@ -184,7 +184,7 @@ public class ClubService {
 
     public List<ClubDetailDTO> getMyClubs(String uid) {
         System.out.println("uid = " + uid);
-        Member member = memberRepository.findByUid(uid)
+        Member member = memberRepository.findById(uid)
                 .orElseThrow(()-> new RuntimeException("해당하는 유저를 찾을 수 없습니다."));
         System.out.println("uid = " + uid);
         List<ClubMember> clubMembers = clubMemberRepository.findByMemberAndRoleType(member, RoleType.MASTER);
