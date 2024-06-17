@@ -7,9 +7,6 @@ import com.clubcommunity.dto.MemberDTO;
 import com.clubcommunity.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Service
 public class MemberService {
 
@@ -88,5 +85,9 @@ public class MemberService {
                 .build();
 
         return memberDTO;
+    }
+
+    public Member findByUidAndPw(String uid, String pw) {
+        return memberRepository.findByUidAndPw(uid, pw);
     }
 }
