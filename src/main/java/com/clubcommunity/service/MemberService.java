@@ -75,4 +75,18 @@ public class MemberService {
 
         memberRepository.save(member);
     }
+
+    public MemberDTO getMemberBaseInfo(String uid) {
+        Member member = memberRepository.findById(uid)
+                .orElseThrow(()-> new RuntimeException("해당하는 회원이 존재하지 않습니다."));
+
+        MemberDTO memberDTO = MemberDTO.builder()
+                .name(member.getName())
+                .department(member.getDepartment())
+                .studentId(member.getStudentId())
+                .phoneNum(member.getPhoneNum())
+                .build();
+
+        return memberDTO;
+    }
 }
