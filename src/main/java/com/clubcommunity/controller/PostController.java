@@ -195,7 +195,7 @@ public class PostController {
             @RequestParam("imageFile") MultipartFile imageFile) throws IOException {
 
         // 작성자 Member 객체 찾기
-        Member member = memberRepository.findByUid(userId)
+        Member member = memberRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Invalid user"));;
 
         // Post 객체 생성 및 저장
