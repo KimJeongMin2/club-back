@@ -22,7 +22,7 @@ public class ClubJoinMember {
     @JoinColumn(name = "club_join_id")
     private ClubJoin clubJoin;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "student_id")
+    @JoinColumn(name = "id")
     private Member member;
 
     @Enumerated(EnumType.STRING)

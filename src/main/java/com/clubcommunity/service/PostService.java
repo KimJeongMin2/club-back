@@ -4,6 +4,7 @@ import com.clubcommunity.domain.*;
 import com.clubcommunity.dto.*;
 import com.clubcommunity.repository.ClubJoinMemberRepository;
 import com.clubcommunity.repository.ClubJoinRepository;
+import com.clubcommunity.repository.MemberRepository;
 import com.clubcommunity.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final MemberService memberService;
 
+    private final MemberRepository memberRepository;
     private final ClubService clubService;
 
     private final ClubJoinRepository clubJoinRepository;
@@ -192,6 +194,14 @@ public class PostService {
 
 
     public Post createMemberRecruitment(PostDTO postDTO, MultipartFile photo, MultipartFile file) {
+        System.out.println(postDTO.toString());
+
+        String memberUid = postDTO.getMember().getUid();
+        System.out.println("memberUid = " + memberUid);
+        Member member = memberService.findByUid(memberUid);
+        if (member == null) {
+            throw new IllegalArgumentException("Member with UID " + memberUid + " not found");
+        }
 
         Post.PostBuilder postBuilder = Post.builder()
                 .title(postDTO.getTitle())
@@ -200,7 +210,6 @@ public class PostService {
                 .category(postDTO.getCategory())
                 .club(clubService.convertClubDTOToClub(postDTO.getClub()));
 
-
         try {
             postBuilder.photo(photo.getBytes());
             postBuilder.file(file.getBytes());
@@ -208,8 +217,8 @@ public class PostService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         Post post = postBuilder.build();
+
         return postRepository.save(post);
     }
 
@@ -381,4 +390,6 @@ public class PostService {
         return videoDTO;
 
     }
+
+
 }

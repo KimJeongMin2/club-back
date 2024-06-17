@@ -39,14 +39,14 @@ public class ClubJoinController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ClubJoinDTO>> getAllClubJoins(@RequestHeader(value="userId", required = true) Long userId) {
-        System.out.println("userId = " + userId);
-        List<ClubJoinDTO> posts = clubJoinService.getAllClubJoinForUser(userId);
+    public ResponseEntity<List<ClubJoinDTO>> getAllClubJoins(@RequestHeader(value="uid", required = true) String uid) {
+        System.out.println("userId = " + uid);
+        List<ClubJoinDTO> posts = clubJoinService.getAllClubJoinForUser(uid);
         return ResponseEntity.ok(posts);
     }
 
     @GetMapping("/approved-members")
-    public ResponseEntity<List<ClubJoinMemberDTO>> getApprovedMembersForClub(@RequestHeader(value="userId", required = true) Long userId) {
+    public ResponseEntity<List<ClubJoinMemberDTO>> getApprovedMembersForClub(@RequestHeader(value="userId", required = true) String userId) {
         System.out.println("userId = " + userId);
         List<ClubJoinMemberDTO> approvedMembers = clubJoinService.getApprovedMembersForClub(userId);
         return ResponseEntity.ok(approvedMembers);

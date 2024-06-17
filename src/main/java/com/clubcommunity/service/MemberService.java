@@ -19,8 +19,13 @@ public class MemberService {
         this.memberRepository = memberRepository;
     }
 
+    public Member findByUid(String uid) {
+        return memberRepository.findByUid(uid).orElse(null);
+    }
     public Member convertMemberDTOToMember(MemberDTO memberDTO) {
+        System.out.println("memberDTO.toString() = " + memberDTO.toString());
         Member member = new Member();
+        member.setUid(memberDTO.getUid());
         member.setStudentId(memberDTO.getStudentId());
         member.setName(memberDTO.getName());
         member.setBirth(memberDTO.getBirth());
@@ -29,11 +34,13 @@ public class MemberService {
         member.setPhoneNum(memberDTO.getPhoneNum());
         member.setEmail(memberDTO.getEmail());
 //        member.setRoleType(memberDTO.getRoleType());
+        System.out.println("member.toString() = " + member.toString());
         return member;
     }
     public MemberDTO convertMemberToMemberDTO(Member member) {
         System.out.println("member임 = " + member);
         MemberDTO memberDTO = new MemberDTO();
+        memberDTO.setUid(member.getUid());
         memberDTO.setStudentId(member.getStudentId());
         memberDTO.setName(member.getName());
         memberDTO.setBirth(member.getBirth());
@@ -44,7 +51,7 @@ public class MemberService {
 //        memberDTO.setRoleType(member.getRoleType());
         return memberDTO;
     }
-    public Member findMemberById(Long userId) {
+    public Member findMemberById(String userId) {
         return memberRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다. ID: " + userId));
     }

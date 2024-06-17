@@ -168,6 +168,7 @@ public class ClubService {
 
     public ClubDTO convertClubToClubDTO(Club club) {
         ClubDTO clubDTO = new ClubDTO();
+        clubDTO.setClubName(club.getClubName());
         clubDTO.setClubId(club.getClubId());
         return clubDTO;
     }
@@ -181,10 +182,11 @@ public class ClubService {
         return clubs;
     }
 
-    public List<ClubDetailDTO> getMyClubs(Long studentId) {
-        Member member = memberRepository.findById(studentId)
+    public List<ClubDetailDTO> getMyClubs(String uid) {
+        System.out.println("uid = " + uid);
+        Member member = memberRepository.findByUid(uid)
                 .orElseThrow(()-> new RuntimeException("해당하는 유저를 찾을 수 없습니다."));
-
+        System.out.println("uid = " + uid);
         List<ClubMember> clubMembers = clubMemberRepository.findByMemberAndRoleType(member, RoleType.MASTER);
         List<ClubDetailDTO> clubDTOs = new ArrayList<>();
 
