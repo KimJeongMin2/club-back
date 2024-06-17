@@ -62,8 +62,8 @@ public class ClubJoinService {
         return clubJoin;
     }
 
-    public List<ClubJoinDTO> getAllClubJoinForUser(Long userId) {
-        Member member = memberService.findMemberById(userId);
+    public List<ClubJoinDTO> getAllClubJoinForUser(String uid) {
+        Member member = memberService.findByUid(uid);
         System.out.println("member = " + member);
         List<Club> clubs = clubService.getClubsForMember(member);
 
