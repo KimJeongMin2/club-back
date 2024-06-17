@@ -1,23 +1,22 @@
 package com.clubcommunity.controller;
 
+import com.clubcommunity.domain.Member;
 import com.clubcommunity.dto.MemberDTO;
 import com.clubcommunity.service.MemberService;
+import org.hibernate.tool.schema.internal.exec.ScriptTargetOutputToFile;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("/members")
+@RequestMapping("")
 public class MemberController {
     private final MemberService memberService;
 
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
     }
-    @PostMapping("/signup")
+    @PostMapping("/members/signup")
     public ResponseEntity<String> completeSignUp(@RequestBody MemberDTO memberDTO) {
         try {
             memberService.registerMember(memberDTO);
@@ -27,4 +26,11 @@ public class MemberController {
         }
     }
 
+
+    @GetMapping("/api/members/baseInfo/{uid}")
+    public ResponseEntity<MemberDTO> getMemberBaseInfo(@PathVariable("uid") String uid) {
+        System.out.println("여기 uid????????" + uid);
+        MemberDTO member = memberService.getMemberBaseInfo(uid);
+        return ResponseEntity.ok(member);
+    }
 }

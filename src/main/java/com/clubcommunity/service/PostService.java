@@ -305,6 +305,13 @@ public class PostService {
 
 
     public Post makeVideo(VideoDTO.Request videoDTO) {
+        String memberUid = videoDTO.getMember().getUid();
+        log.info("memberUid = {}", memberUid);
+
+        Member member = memberService.findByUid(memberUid);
+        if (member == null) {
+            throw new RuntimeException("해당하는 회원이 존재하지 않습니다.");
+        }
         Post post = Post.builder()
                 .title(videoDTO.getTitle())
                 .content(videoDTO.getContent())

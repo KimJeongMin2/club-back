@@ -202,6 +202,14 @@ public class ClubService {
                     .registration(club.getRegistration())
                     .photo(club.getPhoto())
                     .staffList(club.getStaffList())
+                    .type(club.getType())
+                    .applicantName(club.getApplicantName())
+                    .applicantDepartment(club.getApplicantDepartment())
+                    .applicantId(club.getApplicantId())
+                    .applicantPhone(club.getApplicantPhone())
+                    .professorName(club.getProfessorName())
+                    .professorMajor(club.getProfessorMajor())
+                    .professorPhone(club.getProfessorPhone())
                     .build();
 
             clubDTOs.add(clubDTO);
@@ -264,8 +272,7 @@ public class ClubService {
                 .orElseThrow(()-> new RuntimeException("해당하는 동아리가 존재하지 않습니다."));
 
         ClubMember clubMember = clubMemberRepository.findByClubAndStatus(club, Status.GO_OVER);
-        clubMember.approve();
-        clubMemberRepository.save(clubMember);
+        approveMemberAndClub(clubMember, club);
     }
 
     public void approveAllClubs(List<Long> clubIds) {
@@ -275,7 +282,7 @@ public class ClubService {
 
             ClubMember clubMember = clubMemberRepository.findByClubAndStatus(club, Status.GO_OVER);
             if (clubMember != null) {
-                clubMember.approve();
+                approveMemberAndClub(clubMember, club);
             } else {
                 throw new RuntimeException("해당 상태의 클럽 멤버가 존재하지 않습니다.");
             }
@@ -291,5 +298,15 @@ public class ClubService {
         clubMember.reject(refusalReason);
         clubMemberRepository.save(clubMember);
     }
+
+    private void approveMemberAndClub(ClubMember clubMember, Club club) {
+        clubMember.approve();
+        clubMemberRepository.save(clubMember);
+
+        Member member = clubMember.getMember();
+        member.setRoleType(RoleType.MASTER);
+        memberRepository.save(member);
+    }
+
 
 }
