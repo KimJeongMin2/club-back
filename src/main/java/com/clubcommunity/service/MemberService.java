@@ -20,7 +20,7 @@ public class MemberService {
     }
 
     public Member findByUid(String uid) {
-        return memberRepository.findByUid(uid).orElse(null);
+        return memberRepository.findById(uid).orElse(null);
     }
     public Member convertMemberDTOToMember(MemberDTO memberDTO) {
         System.out.println("memberDTO.toString() = " + memberDTO.toString());
@@ -57,7 +57,7 @@ public class MemberService {
     }
 
     public void registerMember(MemberDTO memberDTO) throws Exception {
-        if (memberRepository.existsByUid(memberDTO.getUid())) {
+        if (memberRepository.existsById(memberDTO.getUid())) {
             throw new Exception("이미 존재하는 ID입니다.");
         }
 

@@ -89,7 +89,7 @@ public class KakaoOAuthController {
         }
         System.out.println("userInfo = " + userInfo);
         String kakaoId = userInfo.get("id").asText();
-        Member member = memberRepository.findByUid(kakaoId).orElse(null);
+        Member member = memberRepository.findById(kakaoId).orElse(null);
         if (member == null) {
             return handleSignup(userInfo, kakaoId);
         } else {
@@ -141,7 +141,7 @@ public class KakaoOAuthController {
     }
 
     private ResponseEntity<Object> handleSignup(JsonNode userInfo, String kakaoId) {
-        if (memberRepository.existsByUid(kakaoId)) {
+        if (memberRepository.existsById(kakaoId)) {
             return ResponseEntity.badRequest().body("이미 존재하는 ID입니다.");
         }
 
