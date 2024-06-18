@@ -91,6 +91,13 @@ public class MemberController {
         headers.setLocation(URI.create("http://localhost:3000"));
         return new ResponseEntity<>(headers, HttpStatus.FOUND);
     }
+
+    @GetMapping("/members/baseInfo/{uid}")
+    public ResponseEntity<MemberDTO> getMemberBaseInfo(@PathVariable("uid") String uid) {
+        System.out.println("여기 uid????????" + uid);
+        MemberDTO member = memberService.getMemberBaseInfo(uid);
+        return ResponseEntity.ok(member);
+    }
 //    @PostMapping("/login")
 //    public ResponseEntity<Map<String, Object>> handleLogin(@RequestBody Map<String, String> credentials, HttpServletRequest request, HttpServletResponse response) {
 //        String userId = credentials.get("userId");
