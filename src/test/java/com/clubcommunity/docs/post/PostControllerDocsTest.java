@@ -3,6 +3,8 @@ import com.clubcommunity.controller.PostController;
 import com.clubcommunity.docs.RestDocsSupport;
 import com.clubcommunity.domain.*;
 import com.clubcommunity.dto.*;
+import com.clubcommunity.repository.MemberRepository;
+import com.clubcommunity.repository.PostRepository;
 import com.clubcommunity.service.ImageService;
 import com.clubcommunity.service.MemberService;
 import com.clubcommunity.service.PostService;
@@ -19,9 +21,7 @@ import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
-import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
-import org.springframework.restdocs.operation.preprocess.Preprocessors;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -65,6 +65,14 @@ public class PostControllerDocsTest extends RestDocsSupport {
 
     @MockBean
     private MemberService memberService;
+
+    @MockBean
+    private PostRepository postRepository;
+
+
+    @MockBean
+    private MemberRepository memberRepository;
+
 
     @Override
     protected Object initController() {
@@ -255,7 +263,7 @@ public class PostControllerDocsTest extends RestDocsSupport {
                         "컴퓨터 소프트웨어공학과", // department
                         "010-1234-5678", // phoneNum
                         "kim@gmail.com", // email
-                        RoleType.MEMBER // roleType
+                        RoleType.MASTER // roleType
                 ),
                 LocalDateTime.now(),
                 Category.VIDEO,
@@ -477,8 +485,13 @@ public class PostControllerDocsTest extends RestDocsSupport {
                 .content("http://example.com/video1-updated")
                 .build();
 
+        Post updatedPost = new Post();
+        updatedPost.setPostId(1L);
+        updatedPost.setTitle(updateRequest.getTitle());
+        updatedPost.setContent(updateRequest.getContent());
+
         Mockito.when(postService.updateVideo(any(Long.class), any(VideoDTO.UpdateRequest.class)))
-                .thenReturn(null); // 테스트를 위해 필요한 값 반환
+                .thenReturn(updatedPost);
 
         mockMvc.perform(RestDocumentationRequestBuilders.put("/api/posts/video/{videoId}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -490,6 +503,20 @@ public class PostControllerDocsTest extends RestDocsSupport {
                         requestFields(
                                 fieldWithPath("title").description("비디오 제목"),
                                 fieldWithPath("content").description("비디오 URL")
+                        ),
+                        responseFields(
+                                fieldWithPath("postId").description("비디오 게시물의 ID").type(JsonFieldType.NUMBER),
+                                fieldWithPath("member").description("비디오를 게시한 회원").type(JsonFieldType.OBJECT).optional(),
+                                fieldWithPath("club").description("클럽 정보 (nullable)").type(JsonFieldType.OBJECT).optional(),
+                                fieldWithPath("title").description("비디오 제목").type(JsonFieldType.STRING),
+                                fieldWithPath("content").description("비디오 URL").type(JsonFieldType.STRING),
+                                fieldWithPath("uploadFileName").description("업로드된 파일 이름 (nullable)").type(JsonFieldType.STRING).optional(),
+                                fieldWithPath("category").description("게시물 카테고리 (nullable)").type(JsonFieldType.STRING).optional(),
+                                fieldWithPath("photo").description("게시물 사진 (nullable)").type(JsonFieldType.STRING).optional(),
+                                fieldWithPath("file").description("업로드된 파일 (nullable)").type(JsonFieldType.STRING).optional(),
+                                fieldWithPath("noticeVisibilityType").description("공지사항 공개 유형 (nullable)").type(JsonFieldType.STRING).optional(),
+                                fieldWithPath("createAt").description("게시물 생성 날짜").type(JsonFieldType.STRING),
+                                fieldWithPath("updateAt").description("게시물 마지막 수정 날짜").type(JsonFieldType.STRING)
                         )));
     }
 
