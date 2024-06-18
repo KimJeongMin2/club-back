@@ -45,7 +45,7 @@ public class ClubService {
                 .club(savedClub)
                 .memberStatus(MemberStatus.ACTIVITY)
                 .status(Status.GO_OVER)
-                .roleType(RoleType.MASTER)
+                .roleType(RoleType.MEMBER)
                 .build();
 
         clubMemberRepository.save(clubMember);
