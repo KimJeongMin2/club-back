@@ -26,7 +26,7 @@ public class VideoDTO {
     @Setter
     @Builder
     public static class UpdateRequest {
-        private String id;
+//        private String id;
         private String title; // 동영상 제목
         private String content; // 동영상 url
     }
