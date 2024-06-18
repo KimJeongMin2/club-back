@@ -7,9 +7,6 @@ import com.clubcommunity.dto.MemberDTO;
 import com.clubcommunity.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Service
 public class MemberService {
 
@@ -19,8 +16,13 @@ public class MemberService {
         this.memberRepository = memberRepository;
     }
 
+    public Member findByUid(String uid) {
+        return memberRepository.findById(uid).orElse(null);
+    }
     public Member convertMemberDTOToMember(MemberDTO memberDTO) {
+        System.out.println("memberDTO.toString() = " + memberDTO.toString());
         Member member = new Member();
+        member.setUid(memberDTO.getUid());
         member.setStudentId(memberDTO.getStudentId());
         member.setName(memberDTO.getName());
         member.setBirth(memberDTO.getBirth());
@@ -29,11 +31,13 @@ public class MemberService {
         member.setPhoneNum(memberDTO.getPhoneNum());
         member.setEmail(memberDTO.getEmail());
 //        member.setRoleType(memberDTO.getRoleType());
+        System.out.println("member.toString() = " + member.toString());
         return member;
     }
     public MemberDTO convertMemberToMemberDTO(Member member) {
         System.out.println("member임 = " + member);
         MemberDTO memberDTO = new MemberDTO();
+        memberDTO.setUid(member.getUid());
         memberDTO.setStudentId(member.getStudentId());
         memberDTO.setName(member.getName());
         memberDTO.setBirth(member.getBirth());
@@ -44,13 +48,13 @@ public class MemberService {
 //        memberDTO.setRoleType(member.getRoleType());
         return memberDTO;
     }
-    public Member findMemberById(Long userId) {
+    public Member findMemberById(String userId) {
         return memberRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다. ID: " + userId));
     }
 
     public void registerMember(MemberDTO memberDTO) throws Exception {
-        if (memberRepository.existsByUid(memberDTO.getUid())) {
+        if (memberRepository.existsById(memberDTO.getUid())) {
             throw new Exception("이미 존재하는 ID입니다.");
         }
 
@@ -67,5 +71,23 @@ public class MemberService {
         member.setRoleType(RoleType.valueOf(String.valueOf(memberDTO.getRoleType())));
 
         memberRepository.save(member);
+    }
+
+    public MemberDTO getMemberBaseInfo(String uid) {
+        Member member = memberRepository.findById(uid)
+                .orElseThrow(()-> new RuntimeException("해당하는 회원이 존재하지 않습니다."));
+
+        MemberDTO memberDTO = MemberDTO.builder()
+                .name(member.getName())
+                .department(member.getDepartment())
+                .studentId(member.getStudentId())
+                .phoneNum(member.getPhoneNum())
+                .build();
+
+        return memberDTO;
+    }
+
+    public Member findByUidAndPw(String uid, String pw) {
+        return memberRepository.findByUidAndPw(uid, pw);
     }
 }

@@ -25,6 +25,15 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()));
         http.csrf(AbstractHttpConfigurer::disable);
+
+        http.headers(headers -> {
+            headers.frameOptions(frameOptions -> frameOptions.disable());
+            headers.addHeaderWriter((request, response) -> {
+                response.setHeader("Permissions-Policy", "accelerometer=(), autoplay=(), clipboard-write=(), encrypted-media=(), gyroscope=(), picture-in-picture=()");
+            });
+        });
+
+
         return http.build();
 
     }

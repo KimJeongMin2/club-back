@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -168,6 +169,7 @@ public class ClubService {
 
     public ClubDTO convertClubToClubDTO(Club club) {
         ClubDTO clubDTO = new ClubDTO();
+        clubDTO.setClubName(club.getClubName());
         clubDTO.setClubId(club.getClubId());
         return clubDTO;
     }
@@ -181,10 +183,11 @@ public class ClubService {
         return clubs;
     }
 
-    public List<ClubDetailDTO> getMyClubs(Long studentId) {
-        Member member = memberRepository.findById(studentId)
+    public List<ClubDetailDTO> getMyClubs(String uid) {
+        System.out.println("uid = " + uid);
+        Member member = memberRepository.findById(uid)
                 .orElseThrow(()-> new RuntimeException("해당하는 유저를 찾을 수 없습니다."));
-
+        System.out.println("uid = " + uid);
         List<ClubMember> clubMembers = clubMemberRepository.findByMemberAndRoleType(member, RoleType.MASTER);
         List<ClubDetailDTO> clubDTOs = new ArrayList<>();
 
@@ -200,6 +203,14 @@ public class ClubService {
                     .registration(club.getRegistration())
                     .photo(club.getPhoto())
                     .staffList(club.getStaffList())
+                    .type(club.getType())
+                    .applicantName(club.getApplicantName())
+                    .applicantDepartment(club.getApplicantDepartment())
+                    .applicantId(club.getApplicantId())
+                    .applicantPhone(club.getApplicantPhone())
+                    .professorName(club.getProfessorName())
+                    .professorMajor(club.getProfessorMajor())
+                    .professorPhone(club.getProfessorPhone())
                     .build();
 
             clubDTOs.add(clubDTO);
@@ -262,8 +273,7 @@ public class ClubService {
                 .orElseThrow(()-> new RuntimeException("해당하는 동아리가 존재하지 않습니다."));
 
         ClubMember clubMember = clubMemberRepository.findByClubAndStatus(club, Status.GO_OVER);
-        clubMember.approve();
-        clubMemberRepository.save(clubMember);
+        approveMemberAndClub(clubMember, club);
     }
 
     public void approveAllClubs(List<Long> clubIds) {
@@ -273,7 +283,7 @@ public class ClubService {
 
             ClubMember clubMember = clubMemberRepository.findByClubAndStatus(club, Status.GO_OVER);
             if (clubMember != null) {
-                clubMember.approve();
+                approveMemberAndClub(clubMember, club);
             } else {
                 throw new RuntimeException("해당 상태의 클럽 멤버가 존재하지 않습니다.");
             }
@@ -288,6 +298,39 @@ public class ClubService {
         ClubMember clubMember = clubMemberRepository.findByClubAndStatus(club, Status.GO_OVER);
         clubMember.reject(refusalReason);
         clubMemberRepository.save(clubMember);
+    }
+
+    private void approveMemberAndClub(ClubMember clubMember, Club club) {
+        clubMember.approve();
+        clubMemberRepository.save(clubMember);
+
+        Member member = clubMember.getMember();
+        member.setRoleType(RoleType.MASTER);
+        memberRepository.save(member);
+    }
+
+
+    public List<Club> rejectAllClubs(List<ClubRejectDTO> rejectionList) {
+        List<Club> rejectedClubs = new ArrayList<>();
+
+        for (ClubRejectDTO rejectDTO : rejectionList) {
+            Long clubId = rejectDTO.getClubId();
+            String refusalReason = rejectDTO.getRefusalReason();
+
+            Club club = clubRepository.findById(clubId)
+                    .orElseThrow(() -> new RuntimeException("해당하는 동아리가 존재하지 않습니다."));
+
+            ClubMember clubMember = clubMemberRepository.findByClubAndStatus(club, Status.GO_OVER);
+            if (clubMember != null) {
+                clubMember.reject(refusalReason);
+                clubMemberRepository.save(clubMember);
+                rejectedClubs.add(club);
+            } else {
+                throw new RuntimeException("해당 동아리의 회원이 존재하지 않습니다.");
+            }
+        }
+
+        return rejectedClubs;
     }
 
 }

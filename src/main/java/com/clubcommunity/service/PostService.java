@@ -4,6 +4,7 @@ import com.clubcommunity.domain.*;
 import com.clubcommunity.dto.*;
 import com.clubcommunity.repository.ClubJoinMemberRepository;
 import com.clubcommunity.repository.ClubJoinRepository;
+import com.clubcommunity.repository.MemberRepository;
 import com.clubcommunity.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,6 +30,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final MemberService memberService;
 
+    private final MemberRepository memberRepository;
     private final ClubService clubService;
 
     private final ClubJoinRepository clubJoinRepository;
@@ -192,6 +195,14 @@ public class PostService {
 
 
     public Post createMemberRecruitment(PostDTO postDTO, MultipartFile photo, MultipartFile file) {
+        System.out.println(postDTO.toString());
+
+        String memberUid = postDTO.getMember().getUid();
+        System.out.println("memberUid = " + memberUid);
+        Member member = memberService.findByUid(memberUid);
+        if (member == null) {
+            throw new IllegalArgumentException("Member with UID " + memberUid + " not found");
+        }
 
         Post.PostBuilder postBuilder = Post.builder()
                 .title(postDTO.getTitle())
@@ -200,7 +211,6 @@ public class PostService {
                 .category(postDTO.getCategory())
                 .club(clubService.convertClubDTOToClub(postDTO.getClub()));
 
-
         try {
             postBuilder.photo(photo.getBytes());
             postBuilder.file(file.getBytes());
@@ -208,8 +218,8 @@ public class PostService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         Post post = postBuilder.build();
+
         return postRepository.save(post);
     }
 
@@ -296,11 +306,19 @@ public class PostService {
 
 
     public Post makeVideo(VideoDTO.Request videoDTO) {
+        String memberUid = videoDTO.getMember().getUid();
+        log.info("memberUid = {}", memberUid);
+
+        Member member = memberService.findByUid(memberUid);
+        if (member == null) {
+            throw new RuntimeException("해당하는 회원이 존재하지 않습니다.");
+        }
         Post post = Post.builder()
                 .title(videoDTO.getTitle())
                 .content(videoDTO.getContent())
                 .category(Category.VIDEO)
-                .member(memberService.convertMemberDTOToMember(videoDTO.getMember()))
+//                .member(memberService.convertMemberDTOToMember(videoDTO.getMember()))
+                .member(member)
                 .build();
 
         Post savedPost = postRepository.save(post);
@@ -331,6 +349,7 @@ public class PostService {
 
         return videoDTOS;
     }
+
 
     public List<VideoDTO.Request> getVideoList() {
         // Category가 VIDEO인 포스트 최신순으로 가져옴
@@ -381,6 +400,107 @@ public class PostService {
         return videoDTO;
 
     }
+//    public List<PictureDTO.Request> getPictureList() {
+//        List<Post> picture = postRepository.findByCategoryOrderByCreateAtDesc(Category.PHOTO);
+//        List<PictureDTO.Request> pictureDTOS = new ArrayList<>();
+//
+//        for (Post post : picture) {
+//            PictureDTO.Request pictureDTO = PictureDTO.Request.builder()
+//                    .postId(post.getPostId())
+//                    .title(post.getTitle())
+//                    .content(post.getContent())
+//                    .member(memberService.convertMemberToMemberDTO(post.getMember()))
+//                    .createdAt(post.getCreateAt())
+//                    .updateAt(post.getUpdateAt())
+//                    .category(post.getCategory())
+//                    .photo(post.getPhoto())
+//                    .build();
+//            pictureDTOS.add(pictureDTO);
+//        }
+//
+//        log.info("post 개수:"+pictureDTOS.size());
+//
+//        return pictureDTOS;
+//    }
+    public List<PictureDTO.Request> getPictureList() {
+        List<Post> picture = postRepository.findByCategoryOrderByCreateAtDesc(Category.PHOTO);
+        List<PictureDTO.Request> pictureDTOS = new ArrayList<>();
+        for (Post post : picture) {
+            PictureDTO.Request pictureDTO = PictureDTO.Request.builder()
+                    .postId(post.getPostId())
+                    .title(post.getTitle())
+                    .content(post.getContent())
+                    .member(memberService.convertMemberToMemberDTO(post.getMember()))
+                    .createdAt(post.getCreateAt())
+                    .updateAt(post.getUpdateAt())
+                    .category(post.getCategory())
+                    .photoBase64(Base64.getEncoder().encodeToString(post.getPhoto())) // Base64 인코딩
+                    .build();
+            pictureDTOS.add(pictureDTO);
+        }
+        log.info("post 개수:" + pictureDTOS.size());
+        return pictureDTOS;
+    }
+    public Post updatePicture(Long postId, PictureDTO.UpdateRequest pictureDTO) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("해당하는 Post를 찾을 수 없습니다."));
 
+        post.updateVideo(pictureDTO.getTitle(), pictureDTO.getContent());
 
+        return postRepository.save(post);
+    }
+    public List<PictureDTO.Request> get4PictureList() {
+        List<Post> pictures = postRepository.findTop4ByCategoryOrderByCreateAtDesc(Category.PHOTO);
+        List<PictureDTO.Request> pictureDTOS = new ArrayList<>();
+
+        for (Post post : pictures) {
+            PictureDTO.Request pictureDTO = PictureDTO.Request.builder()
+                    .postId(post.getPostId())
+                    .title(post.getTitle())
+                    .content(post.getContent())
+                    .member(memberService.convertMemberToMemberDTO(post.getMember()))
+                    .createdAt(post.getCreateAt())
+                    .updateAt(post.getUpdateAt())
+                    .category(post.getCategory())
+                    .photoBase64(Base64.getEncoder().encodeToString(post.getPhoto()))
+                    .build();
+            pictureDTOS.add(pictureDTO);
+        }
+
+        log.info("post개수:" + pictureDTOS.size());
+
+        return pictureDTOS;
+    }
+    public PictureDTO.Request getPicture(Long photoId) {
+        Post post = postRepository.findById(photoId)
+                .orElseThrow(() -> new RuntimeException("해당하는 Post를 찾을 수 없습니다."));
+        PictureDTO.Request pictureDTO = PictureDTO.Request.builder()
+                .postId(post.getPostId())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .member(memberService.convertMemberToMemberDTO(post.getMember()))
+                .createdAt(post.getCreateAt())
+                .updateAt(post.getUpdateAt())
+                .category(post.getCategory())
+                .photoBase64(Base64.getEncoder().encodeToString(post.getPhoto()))
+                .build();
+        return pictureDTO;
+    }
+//    public PictureDTO.Request getPicture(Long photoId) {
+//        Post post = postRepository.findById(photoId)
+//                .orElseThrow(() -> new RuntimeException("해당하는 Post를 찾을 수 없습니다."));
+//
+//        PictureDTO.Request pictureDTO = PictureDTO.Request.builder()
+//                .postId(post.getPostId())
+//                .title(post.getTitle())
+//                .content(post.getContent())
+//                .member(memberService.convertMemberToMemberDTO(post.getMember()))
+//                .createdAt(post.getCreateAt())
+//                .updateAt(post.getUpdateAt())
+//                .category(post.getCategory())
+//                .build();
+//
+//        return pictureDTO;
+//
+//    }
 }

@@ -1,6 +1,7 @@
 package com.clubcommunity.controller;
 
 import com.clubcommunity.domain.Club;
+import com.clubcommunity.domain.ClubJoinMember;
 import com.clubcommunity.dto.*;
 import com.clubcommunity.service.ClubService;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ public class ClubController {
     @PostMapping("")
     public ResponseEntity makeClub(@RequestBody ClubDTO clubDTO) throws RuntimeException {
 
+        System.out.println("makeCLub----------");
         Club club = clubService.makeClub(clubDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(club);
     }
@@ -37,9 +39,9 @@ public class ClubController {
     }
 
     // 관리자의 내 동아리 조회
-    @GetMapping("/my/{studentId}")
-    public ResponseEntity<List<ClubDetailDTO>> getMyClubs(@PathVariable("studentId") Long studentId) {
-        List<ClubDetailDTO> clubDTOS = clubService.getMyClubs(studentId);
+    @GetMapping("/my/{uid}")
+    public ResponseEntity<List<ClubDetailDTO>> getMyClubs(@PathVariable("uid") String uid) {
+        List<ClubDetailDTO> clubDTOS = clubService.getMyClubs(uid);
         return ResponseEntity.ok(clubDTOS);
     }
 
@@ -126,6 +128,13 @@ public class ClubController {
         clubService.rejectClub(clubId, refusalReason);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
+    @PutMapping("/reject")
+    public ResponseEntity<List<Club>> rejectAllClubs(@RequestBody List<ClubRejectDTO> rejectionList) {
+        List<Club> rejectedClubs = clubService.rejectAllClubs(rejectionList);
+        return ResponseEntity.ok(rejectedClubs);
+    }
+
 
 
 }

@@ -2,6 +2,7 @@ package com.clubcommunity.controller;
 
 import com.clubcommunity.domain.Member;
 import com.clubcommunity.domain.Post;
+import com.clubcommunity.dto.PictureDTO;
 import com.clubcommunity.dto.PostDTO;
 import com.clubcommunity.dto.VideoDTO;
 import com.clubcommunity.repository.MemberRepository;
@@ -62,7 +63,6 @@ public class PostController {
         List<PostDTO> posts = postService.getRecentNoticePosts();
         return ResponseEntity.ok(posts);
     }
-
 
 
     @GetMapping("/{id}")
@@ -144,10 +144,10 @@ public class PostController {
     }
 
 
-
     //활동 영상 등록
     @PostMapping("/video")
     public ResponseEntity makeVideo(@RequestBody VideoDTO.Request videoDTO) throws RuntimeException {
+        System.out.println("여기?");
         Post post = postService.makeVideo(videoDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(post);
     }
@@ -165,7 +165,6 @@ public class PostController {
         List<VideoDTO.Request> videoList = postService.getVideoList();
         return ResponseEntity.ok(videoList);
     }
-
     //활동 영상 조회
     @GetMapping("/video/{videoId}")
     public ResponseEntity<VideoDTO.Request> getVideo(@PathVariable("videoId") Long videoId) throws RuntimeException {
@@ -187,6 +186,39 @@ public class PostController {
         Post updatedPost = postService.updateVideo(videoId, videoDTO);
         return ResponseEntity.ok(updatedPost);
     }
+    @GetMapping("/images")
+    public ResponseEntity<List<PictureDTO.Request>> getPostImages() throws RuntimeException {
+        List<PictureDTO.Request> postImages = postService.getPictureList();
+        return ResponseEntity.ok(postImages);
+    }
+    @GetMapping("/main-picture")
+    public ResponseEntity<List<PictureDTO.Request>> get4PictureList() throws RuntimeException {
+        List<PictureDTO.Request> pictureList = postService.get4PictureList();
+        return ResponseEntity.ok(pictureList);
+    }
+    @GetMapping("/picture")
+    public ResponseEntity<List<PictureDTO.Request>> getPictureList() throws RuntimeException {
+        List<PictureDTO.Request> pictureList = postService.getPictureList();
+        return ResponseEntity.ok(pictureList);
+    }
+    @GetMapping("/picture/{pictureId}")
+    public ResponseEntity<PictureDTO.Request> getPicture(@PathVariable("pictureId") Long pictureId) throws RuntimeException {
+        PictureDTO.Request picture = postService.getPicture(pictureId);
+        System.out.println("pictureId" + pictureId);
+        return ResponseEntity.ok(picture);
+    }
+    @PutMapping("/picture/{pictureId}")
+    public ResponseEntity<Post> updatePicture(
+            @PathVariable("pictureId") Long pictureId,
+            @RequestBody(required = false) PictureDTO.UpdateRequest pictureDTO
+    ) {
+        System.out.println("Updating post with ID: " + pictureId);
+        System.out.println("Title: " + pictureDTO.getTitle());
+        System.out.println("Content: " + pictureDTO.getContent());
+
+        Post updatedPost = postService.updatePicture(pictureId, pictureDTO);
+        return ResponseEntity.ok(updatedPost);
+    }
     @PostMapping(value = "/activities", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Post> postActivity(
             @RequestParam("title") String title,
@@ -195,7 +227,7 @@ public class PostController {
             @RequestParam("imageFile") MultipartFile imageFile) throws IOException {
 
         // 작성자 Member 객체 찾기
-        Member member = memberRepository.findByUid(userId)
+        Member member = memberRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Invalid user"));;
 
         // Post 객체 생성 및 저장
@@ -212,4 +244,5 @@ public class PostController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(savedPost);
     }
+
 }

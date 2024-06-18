@@ -21,5 +21,20 @@ public class MemberDTO {
     private String email;
     private RoleType roleType;
 
+    @Override
+    public String toString() {
+        return "MemberDTO{" +
+                "uid='" + uid + '\'' +
+                ", studentId=" + studentId +
+                ", name='" + name + '\'' +
+                ", birth=" + birth +
+                ", gender=" + gender +
+                ", department='" + department + '\'' +
+                ", phoneNum='" + phoneNum + '\'' +
+                ", email='" + email + '\'' +
+                ", roleType=" + roleType +
+                '}';
+    }
+
 
 }
