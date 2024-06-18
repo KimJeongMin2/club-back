@@ -193,6 +193,7 @@ public class ClubService {
 
         for (ClubMember clubMember : clubMembers) {
             Club club = clubMember.getClub();
+            System.out.println("지도교수성함? "+club.getProfessorName());
 
             ClubDetailDTO clubDTO = ClubDetailDTO.builder()
                     .clubId(club.getClubId())

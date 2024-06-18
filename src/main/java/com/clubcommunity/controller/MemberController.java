@@ -92,7 +92,7 @@ public class MemberController {
         return new ResponseEntity<>(headers, HttpStatus.FOUND);
     }
 
-    @GetMapping("/api/members/baseInfo/{uid}")
+    @GetMapping("/members/baseInfo/{uid}")
     public ResponseEntity<MemberDTO> getMemberBaseInfo(@PathVariable("uid") String uid) {
         System.out.println("여기 uid????????" + uid);
         MemberDTO member = memberService.getMemberBaseInfo(uid);
