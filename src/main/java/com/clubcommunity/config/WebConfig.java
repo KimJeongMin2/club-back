@@ -12,22 +12,22 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig implements WebMvcConfigurer, ErrorController {
 
-//    @Override
-//    public void addCorsMappings(CorsRegistry registry) {
-//        registry.addMapping("/**")
-//                .allowedOriginPatterns("*")
-//                .allowedMethods("GET", "POST", "PATCH", "DELETE", "PUT",
-//                        HttpMethod.OPTIONS.name()
-//                );
-//    }
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000") // 클라이언트 애플리케이션의 도메인
-                .allowCredentials(true) // 쿠키 전송 허용
-                .allowedMethods("GET", "POST", "PUT", "DELETE")
-                .allowedHeaders("*");
+                .allowedOriginPatterns("*")
+                .allowedMethods("GET", "POST", "PATCH", "DELETE", "PUT",
+                        HttpMethod.OPTIONS.name()
+                );
     }
+//    @Override
+//    public void addCorsMappings(CorsRegistry registry) {
+//        registry.addMapping("/**")
+//                .allowedOrigins("http://localhost:3000") // 클라이언트 애플리케이션의 도메인
+//                .allowCredentials(true) // 쿠키 전송 허용
+//                .allowedMethods("GET", "POST", "PUT", "DELETE")
+//                .allowedHeaders("*");
+//    }
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/docs/**")
