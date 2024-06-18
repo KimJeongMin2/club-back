@@ -380,7 +380,9 @@ public class PostService {
 
         post.updateVideo(videoDTO.getTitle(), videoDTO.getContent());
 
-        return postRepository.save(post);
+        postRepository.save(post);
+
+        return post;
     }
 
     public VideoDTO.Request getVideo(Long videoId) {

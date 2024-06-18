@@ -453,10 +453,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#get-recent-notice-posts">공지사항 삭제</a></li>
 <li><a href="#get-recent-notice-posts">최신 5개 공지 조회</a></li>
 <li><a href="#make-video">활동 영상 등록</a></li>
-<li><a href="#get-4-video-list">최신 비디오 4개 조회</a></li>
-<li><a href="#get-video-list">비디오 리스트 조회</a></li>
-<li><a href="#get-video">비디오 조회</a></li>
-<li><a href="#update-video">비디오 수정</a></li>
+<li><a href="#get-4-video-list">최신 활동 영상 4개 조회</a></li>
+<li><a href="#get-video-list">활동 영상 리스트 조회</a></li>
+<li><a href="#get-video">활동 영상 조회</a></li>
+<li><a href="#update-video">활동 영상 수정</a></li>
 </ul>
 </li>
 </ul>
@@ -495,7 +495,7 @@ Content-Length: 1105
   "content" : "Test Content",
   "category" : "NOTICE",
   "noticeVisibilityType" : "ENTIRE",
-  "createdAt" : "2024-06-18T13:05:01.6403382",
+  "createdAt" : "2024-06-18T13:16:59.4188634",
   "member" : {
     "uid" : "1",
     "pw" : "1",
@@ -805,7 +805,7 @@ Content-Length: 601
   "content" : "Test Content",
   "category" : "NOTICE",
   "noticeVisibilityType" : "ENTIRE",
-  "createdAt" : "2024-06-18T13:05:02.0092089",
+  "createdAt" : "2024-06-18T13:16:59.8927992",
   "member" : {
     "uid" : "1",
     "pw" : "1",
@@ -957,7 +957,7 @@ Content-Length: 601
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/posts/video HTTP/1.1
 Content-Type: application/json
-Content-Length: 530
+Content-Length: 532
 Host: localhost:8080
 
 {
@@ -976,9 +976,9 @@ Host: localhost:8080
     "email" : "kim@gmail.com",
     "roleType" : "MASTER"
   },
-  "createdAt" : "2024-06-18T13:05:01.863303",
+  "createdAt" : "2024-06-18T13:16:59.6224156",
   "category" : "VIDEO",
-  "updateAt" : "2024-06-18T13:05:01.863303"
+  "updateAt" : "2024-06-18T13:16:59.6224156"
 }</code></pre>
 </div>
 </div>
@@ -992,7 +992,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Content-Length: 348
+Content-Length: 350
 
 {
   "postId" : 1,
@@ -1005,8 +1005,8 @@ Content-Length: 348
   "photo" : null,
   "file" : null,
   "noticeVisibilityType" : null,
-  "createAt" : "2024-06-18T13:05:01.863303",
-  "updateAt" : "2024-06-18T13:05:01.863303"
+  "createAt" : "2024-06-18T13:16:59.6224156",
+  "updateAt" : "2024-06-18T13:16:59.6224156"
 }</code></pre>
 </div>
 </div>
@@ -1190,7 +1190,7 @@ Content-Length: 348
 </div>
 </div>
 <div class="sect2">
-<h3 id="get-4-video-list"><a class="link" href="#get-4-video-list">최신 비디오 4개 조회</a></h3>
+<h3 id="get-4-video-list"><a class="link" href="#get-4-video-list">최신 활동 영상 4개 조회</a></h3>
 <div class="sect3">
 <h4 id="_http_request_5"><a class="link" href="#_http_request_5">HTTP Request</a></h4>
 <div class="listingblock">
@@ -1228,9 +1228,9 @@ Content-Length: 2230
     "email" : "kim@gmail.com",
     "roleType" : "MEMBER"
   },
-  "createdAt" : "2024-06-18T13:05:00.7034452",
+  "createdAt" : "2024-06-18T13:16:58.7555143",
   "category" : "VIDEO",
-  "updateAt" : "2024-06-18T13:05:00.7034452"
+  "updateAt" : "2024-06-18T13:16:58.7555143"
 }, {
   "postId" : 1,
   "title" : "샘플 비디오",
@@ -1247,9 +1247,9 @@ Content-Length: 2230
     "email" : "kim@gmail.com",
     "roleType" : "MEMBER"
   },
-  "createdAt" : "2024-06-18T13:05:00.7034452",
+  "createdAt" : "2024-06-18T13:16:58.7555143",
   "category" : "VIDEO",
-  "updateAt" : "2024-06-18T13:05:00.7034452"
+  "updateAt" : "2024-06-18T13:16:58.7555143"
 }, {
   "postId" : 1,
   "title" : "샘플 비디오",
@@ -1266,9 +1266,9 @@ Content-Length: 2230
     "email" : "kim@gmail.com",
     "roleType" : "MEMBER"
   },
-  "createdAt" : "2024-06-18T13:05:00.7034452",
+  "createdAt" : "2024-06-18T13:16:58.7555143",
   "category" : "VIDEO",
-  "updateAt" : "2024-06-18T13:05:00.7034452"
+  "updateAt" : "2024-06-18T13:16:58.7555143"
 }, {
   "postId" : 1,
   "title" : "샘플 비디오",
@@ -1285,9 +1285,9 @@ Content-Length: 2230
     "email" : "kim@gmail.com",
     "roleType" : "MEMBER"
   },
-  "createdAt" : "2024-06-18T13:05:00.7034452",
+  "createdAt" : "2024-06-18T13:16:58.7555143",
   "category" : "VIDEO",
-  "updateAt" : "2024-06-18T13:05:00.7034452"
+  "updateAt" : "2024-06-18T13:16:58.7555143"
 } ]</code></pre>
 </div>
 </div>
@@ -1395,7 +1395,7 @@ Content-Length: 2230
 </div>
 </div>
 <div class="sect2">
-<h3 id="get-video-list"><a class="link" href="#get-video-list">비디오 리스트 조회</a></h3>
+<h3 id="get-video-list"><a class="link" href="#get-video-list">활동 영상 리스트 조회</a></h3>
 <div class="sect3">
 <h4 id="_http_request_6"><a class="link" href="#_http_request_6">HTTP Request</a></h4>
 <div class="listingblock">
@@ -1433,9 +1433,9 @@ Content-Length: 533
     "email" : "kim@gmail.com",
     "roleType" : "MEMBER"
   },
-  "createdAt" : "2024-06-18T13:05:02.1345024",
+  "createdAt" : "2024-06-18T13:17:00.2676738",
   "category" : null,
-  "updateAt" : "2024-06-18T13:05:02.1345024"
+  "updateAt" : "2024-06-18T13:17:00.2676738"
 } ]</code></pre>
 </div>
 </div>
@@ -1543,7 +1543,7 @@ Content-Length: 533
 </div>
 </div>
 <div class="sect2">
-<h3 id="get-video"><a class="link" href="#get-video">비디오 조회</a></h3>
+<h3 id="get-video"><a class="link" href="#get-video">활동 영상 조회</a></h3>
 <div class="sect3">
 <h4 id="_http_request_7"><a class="link" href="#_http_request_7">HTTP Request</a></h4>
 <div class="listingblock">
@@ -1581,9 +1581,9 @@ Content-Length: 529
     "email" : "kim@gmail.com",
     "roleType" : "MEMBER"
   },
-  "createdAt" : "2024-06-18T13:05:02.3547586",
+  "createdAt" : "2024-06-18T13:17:00.5020401",
   "category" : null,
-  "updateAt" : "2024-06-18T13:05:02.3547586"
+  "updateAt" : "2024-06-18T13:17:00.5020401"
 }</code></pre>
 </div>
 </div>
@@ -1691,7 +1691,7 @@ Content-Length: 529
 </div>
 </div>
 <div class="sect2">
-<h3 id="update-video"><a class="link" href="#update-video">비디오 수정</a></h3>
+<h3 id="update-video"><a class="link" href="#update-video">활동 영상 수정</a></h3>
 <div class="sect3">
 <h4 id="_http_request_8"><a class="link" href="#_http_request_8">HTTP Request</a></h4>
 <div class="listingblock">
@@ -1730,8 +1730,8 @@ Content-Length: 367
   "photo" : null,
   "file" : null,
   "noticeVisibilityType" : null,
-  "createAt" : "2024-06-18T13:05:01.3319544",
-  "updateAt" : "2024-06-18T13:05:01.3319544"
+  "createAt" : "2024-06-18T13:16:59.2290947",
+  "updateAt" : "2024-06-18T13:16:59.2290947"
 }</code></pre>
 </div>
 </div>
