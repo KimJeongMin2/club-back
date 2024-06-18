@@ -111,6 +111,14 @@ public class ClubController {
         return ResponseEntity.ok(clubs);
     }
 
+    //내가 신청한 동아리 조회
+    @GetMapping("/applicationClubList/{uid}")
+    public ResponseEntity<List<ClubMyApplicationDTO>> getMyApplicationClubList(@PathVariable("uid") String uid) {
+        List<ClubMyApplicationDTO> clubs = clubService.getMyApplicationClubList(uid);
+        return ResponseEntity.ok(clubs);
+    }
+
+
     @PutMapping("/{clubId}/approve")
     public ResponseEntity<Club> approveClub(@PathVariable Long clubId) {
         clubService.approveClub(clubId);
