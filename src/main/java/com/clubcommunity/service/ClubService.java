@@ -334,4 +334,43 @@ public class ClubService {
         return rejectedClubs;
     }
 
+    public List<ClubMyApplicationDTO> getMyApplicationClubList(String uid) {
+
+        List<ClubMyApplicationDTO> clubDTOs = new ArrayList<>();
+
+        Member member = memberRepository.findById(uid)
+                .orElseThrow(()->new RuntimeException("해당하는 멤버가 존재하지 않습니다"));
+
+        System.out.println("member?"+member);
+        List<Club> clubs = clubRepository.findAll();
+
+        for (Club club : clubs) {
+            List<ClubMember> clubMembers = clubMemberRepository.findByMember(member);
+
+            for (ClubMember clubMember : clubMembers) {
+                if (clubMember.getClub().equals(club)) {
+                    ClubMyApplicationDTO clubDTO = ClubMyApplicationDTO.builder()
+                            .clubId(club.getClubId())
+                            .type(club.getType().getText())
+                            .clubName(club.getClubName())
+                            .applicantName(club.getApplicantName())
+                            .applicantDepartment(club.getApplicantDepartment())
+                            .applicantId(club.getApplicantId())
+                            .applicantPhone(club.getApplicantPhone())
+                            .professorName(club.getProfessorName())
+                            .professorMajor(club.getProfessorMajor())
+                            .professorPhone(club.getProfessorPhone())
+                            .clubStatus(clubMember.getStatus().getText())
+                            .refuseReason(clubMember.getRefusalReason())
+                            .build();
+
+                    clubDTOs.add(clubDTO);
+                }
+            }
+        }
+
+        return clubDTOs;
+
+
+    }
 }
