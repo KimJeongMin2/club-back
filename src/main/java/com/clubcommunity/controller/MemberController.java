@@ -45,7 +45,7 @@ public class MemberController {
         }
     }
     @PostMapping("/login")
-    public ResponseEntity<Object> handleLoFgin(@RequestBody Map<String, String> credentials, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<Object> handleLogin(@RequestBody Map<String, String> credentials, HttpServletRequest request, HttpServletResponse response) {
         String userId = credentials.get("userId");
         String password = credentials.get("password");
 
@@ -86,12 +86,10 @@ public class MemberController {
         sessionIdCookie.setMaxAge(3600);
         sessionIdCookie.setPath("/");
         response.addCookie(sessionIdCookie);
-        System.out.println("response = " + response);
-
 
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(URI.create("http://localhost:3000"));
-        return new ResponseEntity<>(headers, HttpStatus.OK);
+        return new ResponseEntity<>(headers,HttpStatus.OK);
     }
 
     @GetMapping("/members/baseInfo/{uid}")
