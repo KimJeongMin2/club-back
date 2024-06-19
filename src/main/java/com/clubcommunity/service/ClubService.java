@@ -56,7 +56,7 @@ public class ClubService {
     public List<ClubDTO> getAllClub() {
         List<ClubDTO> clubDTOs = new ArrayList<>();
 
-        List<Club> clubs = clubRepository.findAll();
+        List<Club> clubs = clubRepository.findAllWithApprovedMembers();
 
         for (Club club : clubs) {
             ClubDTO clubDTO = new ClubDTO();

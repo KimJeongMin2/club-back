@@ -81,3 +81,24 @@ include::{snippets}/update-video/http-request.adoc[]
 ==== HTTP Response
 include::{snippets}/update-video/http-response.adoc[]
 include::{snippets}/update-video/request-fields.adoc[]
+
+[[get-video-list]]
+=== 활동 사진 리스트 조회
+
+==== HTTP Request
+include::{snippets}/get-picture-list/http-request.adoc[]
+
+==== HTTP Response
+include::{snippets}/get-picture-list/http-response.adoc[]
+include::{snippets}/get-picture-list/response-fields.adoc[]
+
+
+[[get-picture]]
+=== 활동 사진 조회
+
+==== HTTP Request
+include::{snippets}/get-picture/http-request.adoc[]
+
+==== HTTP Response
+include::{snippets}/get-picture/http-response.adoc[]
+include::{snippets}/get-picture/response-fields.adoc[]

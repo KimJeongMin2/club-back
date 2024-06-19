@@ -35,6 +35,7 @@ import java.util.Collections;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
@@ -275,7 +276,7 @@ public class PostControllerDocsTest extends RestDocsSupport {
         post.setTitle(videoDTO.getTitle());
         post.setContent(videoDTO.getContent());
 
-        Mockito.when(postService.makeVideo(any(VideoDTO.Request.class))).thenReturn(post);
+        when(postService.makeVideo(any(VideoDTO.Request.class))).thenReturn(post);
 
         mockMvc.perform(RestDocumentationRequestBuilders.post("/api/posts/video")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -345,7 +346,7 @@ public class PostControllerDocsTest extends RestDocsSupport {
         );
 
 
-        Mockito.when(postService.get4VideoList()).thenReturn(Arrays.asList(video, video, video, video));
+        when(postService.get4VideoList()).thenReturn(Arrays.asList(video, video, video, video));
 
         mockMvc.perform(RestDocumentationRequestBuilders.get("/api/posts/main-video")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -397,7 +398,7 @@ public class PostControllerDocsTest extends RestDocsSupport {
                 .category(null)
                 .build();
 
-        Mockito.when(postService.getVideoList()).thenReturn(Collections.singletonList(video));
+        when(postService.getVideoList()).thenReturn(Collections.singletonList(video));
 
         mockMvc.perform(RestDocumentationRequestBuilders.get("/api/posts/video")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -449,7 +450,7 @@ public class PostControllerDocsTest extends RestDocsSupport {
                 .category(null)
                 .build();
 
-        Mockito.when(postService.getVideo(1L)).thenReturn(video);
+        when(postService.getVideo(1L)).thenReturn(video);
         mockMvc.perform(RestDocumentationRequestBuilders.get("/api/posts/video/{videoId}", 1L)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -490,7 +491,7 @@ public class PostControllerDocsTest extends RestDocsSupport {
         updatedPost.setTitle(updateRequest.getTitle());
         updatedPost.setContent(updateRequest.getContent());
 
-        Mockito.when(postService.updateVideo(any(Long.class), any(VideoDTO.UpdateRequest.class)))
+        when(postService.updateVideo(any(Long.class), any(VideoDTO.UpdateRequest.class)))
                 .thenReturn(updatedPost);
 
         mockMvc.perform(RestDocumentationRequestBuilders.put("/api/posts/video/{videoId}", 1L)
@@ -517,6 +518,110 @@ public class PostControllerDocsTest extends RestDocsSupport {
                                 fieldWithPath("noticeVisibilityType").description("공지사항 공개 유형 (nullable)").type(JsonFieldType.STRING).optional(),
                                 fieldWithPath("createAt").description("게시물 생성 날짜").type(JsonFieldType.STRING),
                                 fieldWithPath("updateAt").description("게시물 마지막 수정 날짜").type(JsonFieldType.STRING)
+                        )));
+    }
+    @Test
+    public void getPostImage() throws Exception {
+        PictureDTO.Request picture = PictureDTO.Request.builder()
+                .postId(1L)
+                .title("샘플 이미지")
+                .content("이미지 설명")
+                .member(new MemberDTO(
+                        "id", // uid
+                        "pw", // pw
+                        20211234L, // studentId
+                        "김회원", // name
+                        2000010L, // birth
+                        Gender.MALE, // gender
+                        "컴퓨터 소프트웨어공학과", // department
+                        "010-1234-5678", // phoneNum
+                        "kim@gmail.com", // email
+                        RoleType.MEMBER // roleType
+                ))                .createdAt(LocalDateTime.now())
+                .updateAt(LocalDateTime.now())
+                .category(null)
+                .photoBase64("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==")
+                .build();
+
+        when(postService.getPicture(1L)).thenReturn(picture);
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/posts/picture/{pictureId}", 1L)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(document("get-picture",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("postId").description("이미지 게시물의 ID"),
+                                fieldWithPath("title").description("이미지 제목"),
+                                fieldWithPath("content").description("이미지 내용"),
+                                fieldWithPath("member").description("이미지를 게시한 회원"),
+                                fieldWithPath("member.uid").description("회원의 UID").optional(),
+                                fieldWithPath("member.pw").description("회원의 비밀번호").optional(),
+                                fieldWithPath("member.studentId").description("회원의 학번"),
+                                fieldWithPath("member.name").description("회원의 이름"),
+                                fieldWithPath("member.birth").description("회원의 생년월일"),
+                                fieldWithPath("member.gender").description("회원의 성별"),
+                                fieldWithPath("member.department").description("회원의 학과"),
+                                fieldWithPath("member.phoneNum").description("회원의 전화번호"),
+                                fieldWithPath("member.email").description("회원의 이메일"),
+                                fieldWithPath("member.roleType").description("회원의 역할 유형"),
+                                fieldWithPath("createdAt").description("게시물 생성 날짜"),
+                                fieldWithPath("updateAt").description("게시물 마지막 수정 날짜"),
+                                fieldWithPath("category").description("게시물 카테고리"),
+                                fieldWithPath("photoBase64").description("이미지 Base64 인코딩 문자열").type(JsonFieldType.STRING)
+                        )));
+    }
+
+    @Test
+    public void getPictureList() throws Exception {
+        PictureDTO.Request photo = PictureDTO.Request.builder()
+                .postId(1L)
+                .title("샘플 이미지")
+                .content("이미지 내용")
+                .member(new MemberDTO(
+                        "id", // uid
+                        "pw", // pw
+                        20211234L, // studentId
+                        "김회원", // name
+                        2000010L, // birth
+                        Gender.MALE, // gender
+                        "컴퓨터 소프트웨어공학과", // department
+                        "010-1234-5678", // phoneNum
+                        "kim@gmail.com", // email
+                        RoleType.MEMBER // roleType
+                ))                     .createdAt(LocalDateTime.now())
+                .updateAt(LocalDateTime.now())
+                .category(null)
+                .photoBase64("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==")
+                .build();
+
+        when(postService.getPictureList()).thenReturn(Collections.singletonList(photo));
+
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/posts/picture")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(document("get-picture-list",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("[].postId").description("이미지 게시물의 ID"),
+                                fieldWithPath("[].title").description("이미지 제목"),
+                                fieldWithPath("[].content").description("이미지 내용"),
+                                fieldWithPath("[].member").description("이미지 게시한 회원"),
+                                fieldWithPath("[].member.uid").description("회원의 UID").optional(),
+                                fieldWithPath("[].member.pw").description("회원의 비밀번호").optional(),
+                                fieldWithPath("[].member.studentId").description("회원의 학번"),
+                                fieldWithPath("[].member.name").description("회원의 이름"),
+                                fieldWithPath("[].member.birth").description("회원의 생년월일"),
+                                fieldWithPath("[].member.gender").description("회원의 성별"),
+                                fieldWithPath("[].member.department").description("회원의 학과"),
+                                fieldWithPath("[].member.phoneNum").description("회원의 전화번호"),
+                                fieldWithPath("[].member.email").description("회원의 이메일"),
+                                fieldWithPath("[].member.roleType").description("회원의 역할 유형"),
+                                fieldWithPath("[].createdAt").description("게시물 생성 날짜"),
+                                fieldWithPath("[].updateAt").description("게시물 마지막 수정 날짜"),
+                                fieldWithPath("[].category").description("게시물 카테고리"),
+                                fieldWithPath("[].photoBase64").description("이미지 URL")
                         )));
     }
 
